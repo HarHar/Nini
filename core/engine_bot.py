@@ -9,8 +9,8 @@ from time import sleep
 
 def pushEvent(modules, event):
 	for module in modules:
-		if module['enabled']:
-			module['instance'].event(event)
+		if modules[module]['enabled']:
+			modules[module]['instance'].event(event)
 
 class Bot(object):
 	def __init__(self, server='localhost', serverPassword='', port=6667, nick='KB', nickservPass='', channel='', channelPassword='', modules={}, adminPassword='default'):
@@ -47,7 +47,7 @@ class Bot(object):
 			self.join(self.channel)
 
 		for instance in self.modules:
-			if instance['enabled']:
+			if self.modules[instance]['enabled']:
 				self.modules[instance]['instance'].setBot(self)
 	def sockSend(self, s):
 		self.sock.send(s + '\r\n')

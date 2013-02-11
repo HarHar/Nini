@@ -6,6 +6,9 @@ import SocketServer
 import threading
 admin_clients = {}
 
+def setVar(var, value):
+	var = value
+
 class SEngine(SocketServer.BaseRequestHandler):
 	version = 'HarBot, version 3'
 	initmessages = [':HarBot.harh.net 001 %nick% :Welcome to HarBot interface',
@@ -92,6 +95,30 @@ class SEngine(SocketServer.BaseRequestHandler):
 				req.send(':$admin!~HarBot@harh.net PRIVMSG '+ selfnick + ' :Unknown command\r\n')
 		elif module.lower() == '$eval':
 			req.send(':$eval!~HarBot@harh.net PRIVMSG ' + selfnick + ' :' + repr(eval(msg)) + '\r\n')
+		elif module.lower() == '$modules':
+			if s[0].lower() == 'disable':
+				if len(s) > 1:
+					try:
+						moduleInstances[s[1]]['enabled'] = False
+					except:
+						req.send(':$modules!~HarBot@harh.net PRIVMSG '+ selfnick + ' :Error! Module not found\r\n')
+						return
+					req.send(':$modules!~HarBot@harh.net PRIVMSG '+ selfnick + ' :Module '+ s[1] + ' is now ignored\r\n')
+				else:
+					req.send(':$modules!~HarBot@harh.net PRIVMSG '+ selfnick + ' :Usage: disable [module]\r\n')
+			elif s[0].lower() == 'enable':
+				if len(s) > 1:
+					try:
+						moduleInstances[s[1]]['enabled'] = True
+					except:
+						req.send(':$modules!~HarBot@harh.net PRIVMSG '+ selfnick + ' :Error! Module not found\r\n')
+						return
+					req.send(':$modules!~HarBot@harh.net PRIVMSG '+ selfnick + ' :Module '+ s[1] + ' is not ignored anymore\r\n')
+				else:
+					req.send(':$modules!~HarBot@harh.net PRIVMSG '+ selfnick + ' :Usage: enable [module]\r\n')
+			else:
+				req.send(':$modules!~HarBot@harh.net NOTICE '+ selfnick + ' :Commands: disable / enable\r\n')
+
 		else:
 			req.send(':$harbot!~HarBot@harh.net NOTICE '+ selfnick + ' :Unknown module\r\n')
 	def finish(self):
@@ -105,7 +132,7 @@ def start(botInstance, modules):
 	bot = botInstance
 
 	for module in moduleInstances:
-		moduleInstances[module].setAdmins(admin_clients)
+		moduleInstances[module]['instance'].setAdmins(admin_clients)
 
 	server = SocketServer.ThreadingTCPServer(('', 6667), SEngine)
 	server.serve_forever()
