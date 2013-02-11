@@ -13,7 +13,7 @@ def pushEvent(modules, event):
 			modules[module]['instance'].event(event)
 
 class Bot(object):
-	def __init__(self, server='localhost', serverPassword='', port=6667, nick='KB', nickservPass='', channel='', channelPassword='', modules={}, adminPassword='default'):
+	def __init__(self, server='localhost', serverPassword='', port=6667, nick='KB', nickservPass='', channel='', channelPassword='', modules={}, adminPassword='default', cmd_type=0, cmd_char='$'):
 		self.modules = modules
 		self.server = server
 		self.serverPassword = serverPassword
@@ -23,6 +23,9 @@ class Bot(object):
 		self.channel = channel
 		self.channelPassword = channelPassword
 		self.password = adminPassword
+		self.commands = {}
+		self.cmd_type = cmd_type
+		self.cmd_char = cmd_char
 
 		#Connection/authentication routine
 		self.sock = socket.socket()
@@ -48,7 +51,11 @@ class Bot(object):
 
 		for instance in self.modules:
 			if self.modules[instance]['enabled']:
-				self.modules[instance]['instance'].setBot(self)
+				cmds = self.modules[instance]['instance'].setBot(self)
+				if cmds != None:
+					for cmd in cmds:
+						for cc in cmd:
+							self.commands[cc] = cmd[cc]
 	def sockSend(self, s):
 		self.sock.send(s + '\r\n')
 	def msg(self, who, message):
@@ -76,6 +83,20 @@ class Bot(object):
 		pushEvent(self.modules, {'name': 'selfnick', 'old': oldnick, 'new': newnick})
 	def irc_onMsg(self, nickFrom, host, to, msg):
 		pushEvent(self.modules, {'name': 'msg', 'from': nickFrom, 'from_host': host, 'to': to, 'msg': msg})
+
+		split = msg.split(' ')
+		args = ''
+		for word in split[1:]:
+			args += word + ' '
+		args = args[:-1]
+
+		for cmd in self.commands:
+			if self.cmd_type == 0:
+				if split[0].lower() == self.cmd_char + cmd.lower():
+					self.commands[cmd](args, to, nickFrom, host)
+			elif self.cmd_type == 1:
+				if split[0].lower() == cmd.lower() + self.cmd_char:
+					self.commands[cmd](args, to, nickFrom, host)
 
 		if to[0] == '#':
 			split = msg.split(' ')

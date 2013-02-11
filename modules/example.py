@@ -7,6 +7,7 @@ class BotModule(object):
 		self.admins = {}
 	def setBot(self, bot):
 		self.bot = bot
+		return [{'test2': self.cmd_test2}]
 	def setAdmins(self, admins):
 		self.admins = admins
 	def event(self, ev):
@@ -15,3 +16,9 @@ class BotModule(object):
 
 			if split[0].lower() == '$test':
 				self.bot.msg(ev['to'], 'It works .‿.')
+
+	##############
+	#Registered command
+	##############
+	def cmd_test2(self, args, receiver, sender, sender_address):
+		self.bot.msg(receiver, 'This works too \\^ ^')
