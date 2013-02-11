@@ -48,7 +48,7 @@ class botServer(SocketServer.BaseRequestHandler):
 		connections[self.request] = False
 
 def start(botInstance, modules):
-	print 'Listening on 60981'
+	print '[\033[94minfo\033[0m] Listening on 60981 for stand-alone plugins'
 	global moduleInstances
 	moduleInstances = modules
 	global bot
