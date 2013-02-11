@@ -6,7 +6,7 @@ import pickle
 #Persistent variables
 class persVars(object):
 	def __init__(self):
-		self.vardir = os.path.dirname(os.path.realpath(sys.argv[0]))
+		self.vardir = os.path.dirname(os.path.realpath(__file__))
 	def __getitem__(self, item):
 		if isinstance(item, str) == False:
 			print '[NON-FATAL] ' + repr(item) + ' is not a string'
