@@ -26,6 +26,7 @@ class Bot(object):
 		self.commands = {}
 		self.cmd_type = cmd_type
 		self.cmd_char = cmd_char
+		self.joinedChannels = []
 
 		#Connection/authentication routine
 		self.sock = socket.socket()
@@ -48,6 +49,7 @@ class Bot(object):
 
 		if self.channel != '':
 			self.join(self.channel)
+			self.joinedChannels = self.channel.replace(' ', '').split(',')
 
 		for instance in self.modules:
 			if self.modules[instance]['enabled']:
