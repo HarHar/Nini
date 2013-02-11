@@ -75,9 +75,13 @@ modules = massload(os.path.join(directory, 'modules/'))
 modInstances = {}
 for module in modules:
 	try:
+		sys.stdout.write('Loading ' + repr(module) + '... ')
 		modInstances[module] = {'instance': modules[module].BotModule(persistentVariables), 'enabled': True}
+		sys.stdout.write('[\033[92mdone\033[0m]\n')
 	except AttributeError:
-		print 'Ignoring ' + module
+		sys.stdout.write('[\033[93mwarning\033[0m]\n')
+	except:
+		sys.stdout.write('[\033[91merror\033[0m]\n')
 
 config = persistentVariables['config']
 bot = core.engine_bot.Bot(server=config['server'], serverPassword=config['serverPassword'], port=config['port'], nick=config['nick'], nickservPass=config['nickservPass'], channel=config['channel'], adminPassword=config['adminPassword'], modules=modInstances, cmd_type=config['cmd_type'], cmd_char=config['cmd_char']) #We need to go wider
