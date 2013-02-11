@@ -13,6 +13,8 @@ import os
 import imp
 import traceback
 
+import sys
+
 def massload(folder):
 	modls = {}
 	from os.path import join
@@ -33,6 +35,41 @@ def massload(folder):
 global persistentVariables, bot, srv, admin, modules, modInstances # Lazy
 persistentVariables = var.persVars()
 
+config = False
+if '--config' in sys.argv:
+	config = True
+
+if persistentVariables['config'] == {}:
+	config = True
+
+if config:
+	#(self, server='localhost', serverPassword='', port=6667, nick='KB', nickservPass='', channel='', channelPassword='', modules={}, adminPassword='default', cmd_type=0, cmd_char='$'):
+	print 'Initiating configuration routine...'
+	print 'You may access this anytime by using the "--config" parameter'
+	newconf = {}
+	newconf['server'] = raw_input('IRC Server host/address> ')
+	newconf['serverPassword'] = raw_input('Server password [optional]> ')
+
+	p = 'lol'
+	while p.isdigit() == False: p = raw_input('Port [number only]> ')
+	newconf['port'] = int(p)
+
+	newconf['nick'] = raw_input('Nick> ')
+	newconf['nickservPass'] = raw_input('NickServ password [optional]> ')
+	newconf['channel'] = raw_input('Channels [separated by comma]> ')
+	newconf['adminPassword'] = raw_input('Administration password [IMPORTANT!]> ')
+
+	t = 'lol'
+	while (t in ['0', '1']) == False: t = raw_input('Command type [0 for prefix; 1 for affix]> ')
+	newconf['cmd_type'] = int(t)
+
+	newconf['cmd_char'] = raw_input('Command ' + ('prefix' if int(t) == 0 else 'affix') + ' character> ')
+
+	persistentVariables['config'] = newconf
+
+	print 'Saved'
+	print 'Continuing boot procedure'
+
 directory = os.path.dirname(os.path.realpath(__file__))
 modules = massload(os.path.join(directory, 'modules/'))
 modInstances = {}
@@ -42,7 +79,8 @@ for module in modules:
 	except AttributeError:
 		print 'Ignoring ' + module
 
-bot = core.engine_bot.Bot(server='irc.rizon.net', nick='KBlitz', channel='#KBlitz2', adminPassword='lel', modules=modInstances)
+config = persistentVariables['config']
+bot = core.engine_bot.Bot(server=config['server'], serverPassword=config['serverPassword'], port=config['port'], nick=config['nick'], nickservPass=config['nickservPass'], channel=config['channel'], adminPassword=config['adminPassword'], modules=modInstances, cmd_type=config['cmd_type'], cmd_char=config['cmd_char']) #We need to go wider
 
 srv = threading.Thread(target=core.engine_botserver.start, args=(bot, modInstances))
 srv.setDaemon(True)
@@ -51,3 +89,12 @@ srv.start()
 admin = threading.Thread(target=core.engine_admin.start, args=(bot, modInstances))
 admin.setDaemon(True)
 admin.start()
+
+#All stuff is threaded so we really don't have to do anything here
+#Maybe on the future there'll be a sort of interpretor
+from time import sleep
+while True:
+	try:
+		sleep(420)#blazeitfgt
+	except:
+		os.kill(os.getpid(), 9) #seppuku
