@@ -27,6 +27,7 @@ class Bot(object):
 		self.cmd_type = cmd_type
 		self.cmd_char = cmd_char
 		self.joinedChannels = []
+		self.ignores = {}
 
 		#Connection/authentication routine
 		self.sock = socket.socket()
@@ -62,6 +63,14 @@ class Bot(object):
 		self.sock.send(s + '\r\n')
 	def msg(self, who, message):
 		self.sockSend('PRIVMSG ' + who + ' :' + message)
+
+		pushEvent(self.modules, {'name': 'selfmsg', 'who': who, 'message': message})
+		sleep(1)
+	def notice(self, who, message):
+		self.sockSend('NOTICE ' + who + ' :' + message)
+
+		pushEvent(self.modules, {'name': 'selfnotice', 'who': who, 'message': message})
+		sleep(1)
 	def join(self, channel, passw=''):
 		if passw != '': passw = ' ' + passw
 		self.sockSend('JOIN ' + channel + passw)
@@ -84,6 +93,9 @@ class Bot(object):
 
 		pushEvent(self.modules, {'name': 'selfnick', 'old': oldnick, 'new': newnick})
 	def irc_onMsg(self, nickFrom, host, to, msg):
+		if nickFrom in self.ignores:
+			if self.ignores[nickFrom] == '*': return
+			if self.ignores[nickFrom] == to: return
 		pushEvent(self.modules, {'name': 'msg', 'from': nickFrom, 'from_host': host, 'to': to, 'msg': msg})
 
 		split = msg.split(' ')
