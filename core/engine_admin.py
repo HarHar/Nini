@@ -136,4 +136,5 @@ def start(botInstance, modules):
 
 	print '[\033[94minfo\033[0m] Listening on 6262 (irc) for administrators'
 	server = SocketServer.ThreadingTCPServer(('', 6262), SEngine)
+	server.allow_reuse_address = True
 	server.serve_forever()

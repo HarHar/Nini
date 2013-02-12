@@ -54,4 +54,5 @@ def start(botInstance, modules):
 	global bot
 	bot = botInstance
 	server = SocketServer.ThreadingTCPServer(('127.0.0.1', 60981), botServer)
+	server.allow_reuse_address = True
 	server.serve_forever()
