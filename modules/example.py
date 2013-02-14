@@ -7,7 +7,7 @@ class BotModule(object):
 		self.admins = {}
 		self.bot = None
 	def register(self):
-		return {'functions': [{'test2': self.cmd_test2}]}
+		return {'functions': [{'test2': self.cmd_test2}], 'modifiers': [{'replace': self.mod_replace}]}
 	def event(self, ev):
 		if ev['name'] == 'msg':
 			split = ev['msg'].split(' ')
@@ -20,3 +20,11 @@ class BotModule(object):
 	##############
 	def cmd_test2(self, args, receiver, sender, sender_address):
 		self.bot.msg(receiver, 'This works too \\^ ^')
+
+	##############
+	#Modifier
+	##############
+	def mod_replace(self, content):
+		if content['name'] == 'msg':
+			content['message'] = content['message'].replace('ASSHOLE', '[CENSORED]')
+		return content	
