@@ -12,4 +12,5 @@ class BotModule(object):
 		self.admins = admins
 	def event(self, ev):
 		for admin in self.admins:
-			admin.send(':$event!HarBot@harh.net PRIVMSG ' + self.admins[admin]['nick'] + ' :' + repr(ev) + '\r\n')
+			if self.admins[admin]['authenticated']:
+				admin.send(':$event!HarBot@harh.net PRIVMSG ' + self.admins[admin]['nick'] + ' :' + repr(ev) + '\r\n')
