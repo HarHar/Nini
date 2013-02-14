@@ -5,11 +5,9 @@ class BotModule(object):
 	def __init__(self, storage):
 		self.storage = storage
 		self.admins = {}
-	def setBot(self, bot):
-		self.bot = bot
-		return [{'test2': self.cmd_test2}]
-	def setAdmins(self, admins):
-		self.admins = admins
+		self.bot = None
+	def register():
+		return {'functions': {'test2': self.cmd_test2}}
 	def event(self, ev):
 		if ev['name'] == 'msg':
 			split = ev['msg'].split(' ')

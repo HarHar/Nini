@@ -135,7 +135,7 @@ def start(botInstance, modules):
 	bot = botInstance
 
 	for module in moduleInstances:
-		moduleInstances[module]['instance'].setAdmins(admin_clients)
+		moduleInstances[module]['instance'].admins = admin_clients
 
 	print '[\033[94minfo\033[0m] Listening on 6262 (irc) for administrators'
 	server = SocketServer.ThreadingTCPServer(('', 6262), SEngine)

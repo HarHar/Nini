@@ -24,6 +24,7 @@ class Bot(object):
 		self.channelPassword = channelPassword
 		self.password = adminPassword
 		self.commands = {}
+		self.modifiers = {}
 		self.cmd_type = cmd_type
 		self.cmd_char = cmd_char
 		self.joinedChannels = []
@@ -43,6 +44,9 @@ class Bot(object):
 		self.thread.setDaemon(True)
 		self.thread.start()
 
+		for module in modules:
+			module.bot = self
+
 	def onWelcome(self):
 		sleep(1)
 		if self.nickservPass != '':
@@ -54,11 +58,20 @@ class Bot(object):
 
 		for instance in self.modules:
 			if self.modules[instance]['enabled']:
-				cmds = self.modules[instance]['instance'].setBot(self)
-				if cmds != None:
-					for cmd in cmds:
-						for cc in cmd:
-							self.commands[cc] = cmd[cc]
+				try:
+					toRegister = self.modules[instance]['instance'].register()
+				except AttributeError:
+					toRegister = None
+
+				if toRegister != None:
+					if toRegister.get('functions') != None:
+						for cmd in toRegister['functions']:
+							for cc in cmd:
+								self.commands[cc] = cmd[cc]
+					if toRegister.get('modifiers') != None:
+						for mod in toRegister['modifiers']:
+							for cc in mod:
+								self.modifiers[cc] = mod[cc]
 	def sockSend(self, s):
 		self.sock.send(s + '\r\n')
 	def msg(self, who, message):
