@@ -45,7 +45,7 @@ class Bot(object):
 		self.thread.start()
 
 		for module in modules:
-			module.bot = self
+			modules[module].bot = self
 
 	def onWelcome(self):
 		sleep(1)
