@@ -99,7 +99,7 @@ class Bot(object):
 		self.sock.close()
 
 		pushEvent(self.modules, {'name': 'quit', 'reason': reason})
-	def nick(newnick):
+	def chnick(newnick):
 		self.sockSend('NICK ' + newnick)
 		oldnick = self.nick
 		self.nick = newnick
