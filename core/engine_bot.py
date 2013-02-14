@@ -75,31 +75,64 @@ class Bot(object):
 	def sockSend(self, s):
 		self.sock.send(s + '\r\n')
 	def msg(self, who, message):
+		for mod in self.modifiers:
+			res = self.modifiers[mod]({'name': 'msg', 'who': who, 'message': message})
+			who = res['who']
+			message = res['message']
+			if res.get('block') != None: return
+
 		self.sockSend('PRIVMSG ' + who + ' :' + message)
 
 		pushEvent(self.modules, {'name': 'selfmsg', 'who': who, 'message': message})
 		sleep(1)
 	def notice(self, who, message):
+		for mod in self.modifiers:
+			res = self.modifiers[mod]({'name': 'notice', 'who': who, 'message': message})
+			who = res['who']
+			message = res['message']
+			if res.get('block') != None: return
+
 		self.sockSend('NOTICE ' + who + ' :' + message)
 
 		pushEvent(self.modules, {'name': 'selfnotice', 'who': who, 'message': message})
 		sleep(1)
 	def join(self, channel, passw=''):
+		for mod in self.modifiers:
+			res = self.modifiers[mod]({'name': 'join', 'channel': channel, 'password': passw})
+			channel = res['channel']
+			passw = res['password']
+
 		if passw != '': passw = ' ' + passw
 		self.sockSend('JOIN ' + channel + passw)
 
 		pushEvent(self.modules, {'name': 'selfjoin', 'channel': channel})
 	def part(self, channel, reason=''):
+		for mod in self.modifiers:
+			res = self.modifiers[mod]({'name': 'part', 'channel': channel, 'reason': reason})
+			channel = res['channel']
+			reason = res['reason']
+			if res.get('block') != None: return
+
 		self.sockSend('PART ' + channel + ' :' + reason)
 
 		pushEvent(self.modules, {'name': 'selfpart', 'channel': channel})
 	def quit(self, reason='Leaving'):
+		for mod in self.modifiers:
+			res = self.modifiers[mod]({'name': 'quit', 'reason': reason})
+			reason = res['reason']
+			if res.get('block') != None: return
+
 		self.active = False
 		self.sockSend('QUIT :' + reason)
 		self.sock.close()
 
 		pushEvent(self.modules, {'name': 'quit', 'reason': reason})
 	def chnick(newnick):
+		for mod in self.modifiers:
+			res = self.modifiers[mod]({'name': 'nick', 'newnick': newnick})
+			newnick = res['newnick']
+			if res.get('block') != None: return
+
 		self.sockSend('NICK ' + newnick)
 		oldnick = self.nick
 		self.nick = newnick
