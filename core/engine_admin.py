@@ -95,6 +95,9 @@ class SEngine(SocketServer.BaseRequestHandler):
 				req.send(':$admin!~HarBot@harh.net PRIVMSG '+ selfnick + ' :Unknown command\r\n')
 		elif module.lower() == '$eval':
 			req.send(':$eval!~HarBot@harh.net PRIVMSG ' + selfnick + ' :' + repr(eval(msg)) + '\r\n')
+		elif module.lower() == '$exec':
+			exec msg
+			req.send(':$exec!~HarBot@harh.net PRIVMSG ' + selfnick + ' :Executed\r\n')
 		elif module.lower() == '$modules':
 			if s[0].lower() == 'disable':
 				if len(s) > 1:
