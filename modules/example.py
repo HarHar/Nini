@@ -6,7 +6,7 @@ class BotModule(object):
 		self.storage = storage
 		self.admins = {}
 		self.bot = None
-	def register():
+	def register(self):
 		return {'functions': {'test2': self.cmd_test2}}
 	def event(self, ev):
 		if ev['name'] == 'msg':
