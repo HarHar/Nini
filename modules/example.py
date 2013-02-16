@@ -7,7 +7,7 @@ class BotModule(object):
 		self.admins = {}
 		self.bot = None
 	def register(self):
-		return {'functions': [{'test2': self.cmd_test2}], 'modifiers': [{'replace': self.mod_replace}]}
+		return {'functions': [{'test2': self.cmd_test2}], 'modifiers': [{'mod_test': self.mod_replace}]}
 	def event(self, ev):
 		if ev['name'] == 'msg':
 			split = ev['msg'].split(' ')
