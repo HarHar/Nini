@@ -184,6 +184,11 @@ class Bot(object):
 
 		if to[0] == '#':
 			split = msg.split(' ')
+	def irc_onInvite(self, nick, channel):
+		if nick in self.ignores:
+			if self.ignores[nickFrom] == '*': return
+			if self.ignores[nickFrom] == channel: return
+		pushEvent(self.modules, {'name': 'invite', 'from': nick, 'channel': channel})
 
 def handlingThread(sock, bot):
 	while bot.active:
@@ -225,3 +230,5 @@ def handlingThread(sock, bot):
 					msg = msg[:-1].lstrip()
 					# ---END WTF BLOCK- --
 					bot.irc_onMsg(nfrom, addrnfrom, to, msg)
+				elif csplit[1].lower() == 'invite':
+					bot.irc_onInvite(lsplit[1].split('!')[0].strip('\r').strip('\n'), lsplit[2])
