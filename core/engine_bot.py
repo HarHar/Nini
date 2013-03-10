@@ -212,6 +212,8 @@ def handlingThread(sock, bot):
 				if len(csplit) >= 2:
 					if csplit[1] == '001':
 						bot.onWelcome()
+					elif csplit[1].lower() == 'invite':
+						bot.irc_onInvite(lsplit[1].split('!')[0].strip('\r').strip('\n'), lsplit[2])					
 				if 'PRIVMSG' in lsplit[1] or 'NOTICE' in lsplit[1]:
 					# ---BEGIN WTF BLOCK---
 					lsplit = line.split(':')
@@ -230,5 +232,3 @@ def handlingThread(sock, bot):
 					msg = msg[:-1].lstrip()
 					# ---END WTF BLOCK- --
 					bot.irc_onMsg(nfrom, addrnfrom, to, msg)
-				elif csplit[1].lower() == 'invite':
-					bot.irc_onInvite(lsplit[1].split('!')[0].strip('\r').strip('\n'), lsplit[2])
