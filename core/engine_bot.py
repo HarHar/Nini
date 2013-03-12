@@ -162,6 +162,37 @@ class Bot(object):
 
 		pushEvent(self.modules, {'name': 'selfnick', 'old': oldnick, 'new': newnick})
 	def irc_onMsg(self, nickFrom, host, to, msg):
+		def sendHelp(module):
+			if module == 'ALL':
+				cmdlist = []
+				extra = ''
+				for cmd in self.commands:
+					if self.commands[cmd]['module']['enabled']:
+						if self.cmd_type == 0:
+							cmdlist.append(self.cmd_char + cmd)
+							extra = 'Use ' + chr(3) + '03' + self.cmd_char + 'help [command]' + chr(15) + ' to see details on a specific command'
+						else:
+							cmdlist.append(cmd + self.cmd_char)
+							extra = 'Use ' + chr(3) + '03' + 'help' + self.cmd_char + ' [command]' + chr(15) + ' to see details on a specific command'
+				compiled = chr(2) + 'Command list' + chr(15) + ' '
+				c = False
+				for cmd in sorted(cmdlist):
+					if c:
+						compiled += chr(3) + '13'
+					else:
+						compiled += chr(3) + '02'
+
+					c = not c
+					compiled += cmd + chr(15) + ' / '
+				compiled = compiled[:-3]
+				self.notice(nickFrom, compiled)
+				self.notice(nickFrom, extra)
+
+				del cmdlist
+				del compiled
+				del c 
+				del extra
+
 		if nickFrom in self.ignores:
 			if self.ignores[nickFrom] == '*': return
 			if self.ignores[nickFrom] == to: return
@@ -172,6 +203,19 @@ class Bot(object):
 		for word in split[1:]:
 			args += word + ' '
 		args = args[:-1]
+
+		if self.cmd_type == 0:
+			if split[0].lower() == self.cmd_char + 'help':
+				if len(msg.strip().split(' ')) == 1:
+					sendHelp('ALL')
+				else:
+					sendHelp(split[1])
+		elif self.cmd_type == 1:
+			if split[0].lower() == 'help' + self.cmd_char:
+				if len(msg.strip().split(' ')) == 1:
+					sendHelp('ALL')
+				else:
+					sendHelp(split[1])
 
 		for cmd in self.commands:
 			if self.commands[cmd]['module']['enabled']:
