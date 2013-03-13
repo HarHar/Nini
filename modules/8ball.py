@@ -11,5 +11,5 @@ class BotModule(object):
 	def cmd_8ball(self, args, receiver, sender, sender_address):
 		"""test2 [question] | True | Ping-pong"""
 		if receiver[0] == '#':
-			self.msg(receiver, chr(2) + 'Question: ' + chr(15) + args)
-			self.msg(receiver, chr(2) + 'Answer: ' + chr(15) + random.choice(self.answers))
+			self.bot.msg(receiver, chr(2) + 'Question: ' + chr(15) + args)
+			self.bot.msg(receiver, chr(2) + 'Answer: ' + chr(15) + random.choice(self.answers))
