@@ -9,7 +9,7 @@ class BotModule(object):
 	def register(self):
 		return {'functions': [{'8ball': self.cmd_8ball}]}
 	def cmd_8ball(self, args, receiver, sender, sender_address):
-		"""test2 [question] | True | Ping-pong"""
+		"""8ball [question] | True | Answers a yes/no question"""
 		if receiver[0] == '#':
 			self.bot.msg(receiver, chr(2) + 'Question: ' + chr(15) + args)
 			self.bot.msg(receiver, chr(2) + 'Answer: ' + chr(15) + random.choice(self.answers))
