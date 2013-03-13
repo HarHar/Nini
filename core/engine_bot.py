@@ -10,7 +10,10 @@ from time import sleep
 def pushEvent(modules, event):
 	for module in modules:
 		if modules[module]['enabled']:
-			modules[module]['instance'].event(event)
+			try:
+				modules[module]['instance'].event(event)
+			except AttributeError:
+				continue
 
 class Bot(object):
 	def __init__(self, server='localhost', serverPassword='', port=6667, nick='KB', nickservPass='', channel='', channelPassword='', modules={}, adminPassword='default', cmd_type=0, cmd_char='$'):
