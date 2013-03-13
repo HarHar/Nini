@@ -11,5 +11,18 @@ class BotModule(object):
 	def cmd_8ball(self, args, receiver, sender, sender_address):
 		"""8ball [question] | True | Answers a yes/no question"""
 		if receiver[0] == '#':
-			self.bot.msg(receiver, chr(2) + 'Question: ' + chr(15) + args)
-			self.bot.msg(receiver, chr(2) + 'Answer: ' + chr(15) + random.choice(self.answers))
+			fixed = args
+			if fixed[0].isupper() == False: fixed = fixed[0].upper() + fixed[1:]
+			if fixed[-1] != '?': fixed = fixed + '?'
+
+			q = ['is', 'does', 'why', 'can', 'will', 'are']
+			isquestion = False
+			for x in fixed.split('.'):
+				if x.strip(' ').split(' ')[0].lower() in q:
+					isquestion = True
+
+			if isquestion:
+				self.bot.msg(receiver, chr(2) + 'Question: ' + chr(15) + fixed)
+				self.bot.msg(receiver, chr(2) + 'Answer: ' + chr(15) + random.choice(self.answers))
+			else:
+				self.bot.msg(receiver, 'Yes/No questions pls')
