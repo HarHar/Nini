@@ -225,7 +225,7 @@ class Bot(object):
 		#Dummy receiver object
 		rcv = receiver()
 		rcv.name = to
-		rcv.ischannel = True if to[0] in ['+#', '%#', '@#', '&#', '~#', '#'] else False
+		rcv.ischannel = True if to[0] == '#' or to[2:] in ['+#', '%#', '@#', '&#', '~#', '#'] else False
 
 		#Dispatch
 		pushEvent(self.modules, {'name': 'msg', 'from': usr, 'admin': self.admin, 'to': rcv, 'msg': msg})
