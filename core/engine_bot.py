@@ -15,8 +15,24 @@ def pushEvent(modules, event):
 			except AttributeError:
 				continue
 
+class user():
+	""" Dummy class to make it easier to deal with users.
+		Is loadable as a dictionary by using json.loads(repr(users)) """
+	nick = ''
+	host = ''
+	def __repr__(self):
+		return '{"nick": "' + self.nick + '", "host": "' + self.host + '", "admin": ' + str(self.admin).lower() + '}'
+
+class receiver():
+	""" Dummy class to make it easier to deal with who is receiving what """
+	name = ''
+	ischannel = False
+	def __repr__(self):
+		return '{"name": "' + self.name + '", "ischannel": ' + str(self.ischannel).lower() + '}'
+
+
 class Bot(object):
-	def __init__(self, server='localhost', serverPassword='', port=6667, nick='KB', nickservPass='', channel='', channelPassword='', modules={}, adminPassword='default', cmd_type=0, cmd_char='$'):
+	def __init__(self, server='localhost', serverPassword='', port=6667, nick='KB', nickservPass='', channel='', channelPassword='', modules={}, adminPassword='default', cmd_type=0, cmd_char='$', admin=user()):
 		self.modules = modules
 		self.server = server
 		self.serverPassword = serverPassword
@@ -32,6 +48,7 @@ class Bot(object):
 		self.cmd_char = cmd_char
 		self.joinedChannels = []
 		self.ignores = {}
+		self.admin = admin
 
 		#Connection/authentication routine
 		self.sock = socket.socket()
@@ -199,7 +216,19 @@ class Bot(object):
 		if nickFrom in self.ignores:
 			if self.ignores[nickFrom] == '*': return
 			if self.ignores[nickFrom] == to: return
-		pushEvent(self.modules, {'name': 'msg', 'from': nickFrom, 'from_host': host, 'to': to, 'msg': msg})
+
+		#Dummy user object
+		usr = user()
+		usr.nick = nickFrom
+		usr.host = host
+
+		#Dummy receiver object
+		rcv = receiver()
+		rcv.name = to
+		rcv.ischannel = True if to[0] in ['+#', '%#', '@#', '&#', '~#', '#'] else False
+
+		#Dispatch
+		pushEvent(self.modules, {'name': 'msg', 'from': usr, 'admin': self.admin, 'to': rcv, 'msg': msg})
 
 		split = msg.split(' ')
 		args = ''
@@ -224,18 +253,18 @@ class Bot(object):
 			if self.commands[cmd]['module']['enabled']:
 				if self.cmd_type == 0:
 					if split[0].lower() == self.cmd_char + cmd.lower():
-						self.commands[cmd]['func'](args, to, nickFrom, host)
+						self.commands[cmd]['func'](args, rcv, usr)
 				elif self.cmd_type == 1:
 					if split[0].lower() == cmd.lower() + self.cmd_char:
-						self.commands[cmd]['func'](args, to, nickFrom, host)
-
-		if to[0] == '#':
-			split = msg.split(' ')
-	def irc_onInvite(self, nick, channel):
+						self.commands[cmd]['func'](args, rcv, usr)
+	def irc_onInvite(self, nick, host, channel):
 		if nick in self.ignores:
 			if self.ignores[nickFrom] == '*': return
 			if self.ignores[nickFrom] == channel: return
-		pushEvent(self.modules, {'name': 'invite', 'from': nick, 'channel': channel})
+		usr = user()
+		usr.nick = nick
+		usr.host = host
+		pushEvent(self.modules, {'name': 'invite', 'from': usr, 'channel': channel})
 
 def handlingThread(sock, bot):
 	while bot.active:
@@ -260,7 +289,7 @@ def handlingThread(sock, bot):
 					if csplit[1] == '001':
 						bot.onWelcome()
 					elif csplit[1].lower() == 'invite':
-						bot.irc_onInvite(lsplit[1].split('!')[0].strip('\r').strip('\n'), lsplit[2])					
+						bot.irc_onInvite(lsplit[1].split('!')[0].strip('\r').strip('\n'), lsplit[1].split('!')[1].strip('\r').strip('\n'), lsplit[2])
 				if 'PRIVMSG' in lsplit[1] or 'NOTICE' in lsplit[1]:
 					# ---BEGIN WTF BLOCK---
 					lsplit = line.split(':')

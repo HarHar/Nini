@@ -8,9 +8,9 @@ class BotModule(object):
 		self.answers = [chr(3) + '04Of course not!', chr(3) + '05No', 'Mayhaps', chr(3) + '03Yes', chr(3) + '02Sure!']
 	def register(self):
 		return {'functions': [{'8ball': self.cmd_8ball}]}
-	def cmd_8ball(self, args, receiver, sender, sender_address):
+	def cmd_8ball(self, args, receiver, sender):
 		"""8ball [question] | True | Answers a yes/no question"""
-		if receiver[0] == '#':
+		if receiver.ischannel:
 			fixed = args
 			if fixed[0].isupper() == False: fixed = fixed[0].upper() + fixed[1:]
 			if fixed[-1] != '?': fixed = fixed + '?'
@@ -22,7 +22,7 @@ class BotModule(object):
 					isquestion = True
 
 			if isquestion:
-				self.bot.msg(receiver, chr(2) + 'Question: ' + chr(15) + fixed)
-				self.bot.msg(receiver, chr(2) + 'Answer: ' + chr(15) + random.choice(self.answers))
+				self.bot.msg(receiver.name, chr(2) + 'Question: ' + chr(15) + fixed)
+				self.bot.msg(receiver.name, chr(2) + 'Answer: ' + chr(15) + random.choice(self.answers))
 			else:
-				self.bot.msg(receiver, 'Yes/No questions pls')
+				self.bot.msg(receiver.name, 'Yes/No questions pls')

@@ -15,6 +15,15 @@ import traceback
 
 import sys
 
+class user():
+	""" Dummy class to make it more easier to deal with users.
+		Is loadable as a dictionary by using json.loads(repr(users)) """
+	nick = ''
+	host = ''
+	def __repr__(self):
+		return '{"nick": "' + self.nick + '", "host": "' + self.host + '", "admin": ' + str(self.admin).lower() + '}'
+
+
 def massload(folder):
 	modls = {}
 	from os.path import join
@@ -57,7 +66,10 @@ if config:
 	newconf['nick'] = raw_input('Nick> ')
 	newconf['nickservPass'] = raw_input('NickServ password [optional]> ')
 	newconf['channel'] = raw_input('Channels [separated by comma]> ')
-	newconf['adminPassword'] = raw_input('Administration password [IMPORTANT!]> ')
+	newconf['adminPassword'] = raw_input('Remote administration password [IMPORTANT!]> ')
+
+	newconf['admin_nick'] = raw_input('Your nick> ')
+	newconf['admin_host'] = raw_input('Your host (or VHost)> ')
 
 	t = 'lol'
 	while (t in ['0', '1']) == False: t = raw_input('Command type [0 for prefix; 1 for affix]> ')
@@ -84,7 +96,11 @@ for module in modules:
 		sys.stdout.write('[\033[91merror\033[0m]\n')
 
 config = persistentVariables['config']
-bot = core.engine_bot.Bot(server=config['server'], serverPassword=config['serverPassword'], port=config['port'], nick=config['nick'], nickservPass=config['nickservPass'], channel=config['channel'], adminPassword=config['adminPassword'], modules=modInstances, cmd_type=config['cmd_type'], cmd_char=config['cmd_char']) #We need to go wider
+
+adm = user()
+adm.nick = config['admin_nick']
+adm.host = config['admin_host']
+bot = core.engine_bot.Bot(server=config['server'], serverPassword=config['serverPassword'], port=config['port'], nick=config['nick'], nickservPass=config['nickservPass'], channel=config['channel'], adminPassword=config['adminPassword'], modules=modInstances, cmd_type=config['cmd_type'], cmd_char=config['cmd_char'], admin=adm) #We need to go wider
 
 srv = threading.Thread(target=core.engine_botserver.start, args=(bot, modInstances))
 srv.setDaemon(True)

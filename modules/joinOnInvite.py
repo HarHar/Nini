@@ -16,7 +16,7 @@ class BotModule(object):
 	def event(self, ev):
 		if ev['name'] == 'invite':
 			tries = self.storage['autojoin'].get(ev['channel'], 1)
-			self.bot.notice(ev['from'], 'Joining ' + ev['channel'] + ' in ' + str(tries * 5) + ' seconds')
+			self.bot.notice(ev['from'].nick, 'Joining ' + ev['channel'] + ' in ' + str(tries * 5) + ' seconds')
 			thread = threading.Thread(target=waitAndJoin, args=(self.bot, ev['channel'], tries))
 			thread.setDaemon(True)
 			thread.start()
