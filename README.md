@@ -1,9 +1,9 @@
-Nini
+NiNi
 ====
 
-Python IRC Bot (continued from HarBot), it is currently on development state (but usable nonetheless)
+Python IRC Bot (continued from HarBot)
 
-The bot is constituted of three parts: an irc client, local server for stand-alone plugins, set of plugins and a irc server, each of them on their own thread.
+The bot is constituted of four parts: an irc client, local server for stand-alone plugins, set of plugins and a irc server, each of them on their own thread.
 
 Specifications
 ====
@@ -18,6 +18,10 @@ It listens on the port 60981 (only locally) for stand-alone plugins, the connect
 Usage
 ====
 Simply execute main.py, the first time it will ask for settings such as channel/command prefix/etc, if you want to change those use the --config argument. It will then proceed to load modules, if the module is loaded correctly, it will show "[done]", if it does not appear to be a Nini plugin it will show "[warn]", if the module has thrown an exception it will show "[error]".
+
+DEVELOPERS DEVELOPERS DEVELOPERS
+====
+An example of module is located on modules/example.py, use it.
 
 whoami
 ====
