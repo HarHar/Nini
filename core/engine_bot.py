@@ -21,7 +21,7 @@ class user():
 	nick = ''
 	host = ''
 	def __repr__(self):
-		return '{"nick": "' + self.nick + '", "host": "' + self.host + '", "admin": ' + str(self.admin).lower() + '}'
+		return '{"nick": "' + self.nick + '", "host": "' + self.host + '"}'
 
 class receiver():
 	""" Dummy class to make it easier to deal with who is receiving what """
