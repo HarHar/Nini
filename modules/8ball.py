@@ -10,6 +10,10 @@ class BotModule(object):
 		return {'functions': [{'8ball': self.cmd_8ball}, {'choose': self.cmd_choose}]}
 	def cmd_8ball(self, args, receiver, sender):
 		"""8ball [question] | True | Answers a yes/no question"""
+		if args == '':
+			self.bot.msg(receiver.name, 'Need a question, sly')
+			return
+			
 		if receiver.ischannel:
 			fixed = args
 			if fixed[0].isupper() == False: fixed = fixed[0].upper() + fixed[1:]
