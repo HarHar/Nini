@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from urllib2 import urlopen, Request
+from urllib import quote
 import json
 
 class BotModule(object):
@@ -11,14 +12,22 @@ class BotModule(object):
         self.bot = None
         self.apiKey = 'AIzaSyBCJciReska7RcTlpOLen7rSrxXmSOVBA4'
         self.gbooksQueryUrl = 'https://www.googleapis.com/books/v1/volumes?q='
-
+    
     def register(self):
         return {'functions': [{'gbooks': self.gbooks}, {'shorten': self.shorten}]}
 
     def gbooks(self, args, receiver, sender):
         """ Searchs Google Books for the arguement and displays info about
             the first result. """
-        result = json.load(urlopen(self.gbooksQueryUrl + args + '&key=' + self.apiKey))['items'][0]
+        if args == "$next":
+            self.resultNum = self.resultNum + 1
+            result = self.results['items'][self.resultNum]
+        else:
+            self.resultNum = 0
+            args = args.replace(' ', '+')
+            args = quote(args)
+            self.results = json.load(urlopen(self.gbooksQueryUrl + args + '&key=' + self.apiKey))
+            result = self.results['items'][0]
         title = result['volumeInfo']['title']
         if len(result['volumeInfo']['authors']) == 1:
             author = result['volumeInfo']['authors'][0]
@@ -29,11 +38,12 @@ class BotModule(object):
                     temp.append(a)
                 else:
                     temp.append(a + ', ')
-
             author = ''.join(temp)
         link = self.shortenUrl(result['volumeInfo']['infoLink'])
         self.bot.msg(receiver.name, chr(2) + 'Title: ' + chr(15) + title + 
-		    chr(2) + ' Author(s): ' + chr(15) + author + chr(2) + ' Link: ' + chr(15) + link)
+                    chr(2) + ' Author(s): ' + chr(15) + author + chr(2) + ' Link: ' + chr(15) + link)
+        if self.resultNum == 0:
+            self.bot.msg(receiver.name, "For the next result use '@gbook $next'")
 
     def shorten(self, args, reciever, sender):
         """ Takes a url and provides a shortened goo.gl link. """
