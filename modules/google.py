@@ -29,7 +29,9 @@ class BotModule(object):
             self.results = json.load(urlopen(self.gbooksQueryUrl + args + '&key=' + self.apiKey))
             result = self.results['items'][0]
         title = result['volumeInfo']['title']
-        if len(result['volumeInfo']['authors']) == 1:
+        if "authors" not in result['volumeInfo']:
+            author = "Unavailable"
+        elif len(result['volumeInfo']['authors']) == 1:
             author = result['volumeInfo']['authors'][0]
         else:
             temp = []
