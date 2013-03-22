@@ -44,7 +44,7 @@ class BotModule(object):
         link = self.shortenUrl(result['volumeInfo']['infoLink'])
         self.bot.msg(receiver.name, chr(2) + 'Title: ' + chr(15) + title + 
                     chr(2) + ' Author(s): ' + chr(15) + author + chr(2) + ' Link: ' + chr(15) + link)
-        if self.resultNum == 0:
+        if self.gbResultNum == 0:
             self.bot.msg(receiver.name, "For the next result use '@gbook $next'")
 
     def shorten(self, args, reciever, sender):
