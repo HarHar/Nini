@@ -18,7 +18,7 @@ class BotModule(object):
         return {'functions': [{'gbooks': self.gbooks}, {'shorten': self.shorten}, {'youtube': self.youtube}]}
 
     def gbooks(self, args, receiver, sender):
-        """ Searchs Google Books for the arguement and displays info about the first result. """
+        """ Searchs Google Books for the arguement and displays info about the results. """
         if args == "$next":
             self.gbResultNum = self.gbResultNum + 1
             result = self.gbResults['items'][self.gbResultNum]
@@ -53,8 +53,8 @@ class BotModule(object):
         self.bot.msg(reciever.name, sender.nick + ': ' + link)
 
     def youtube(self, args, receiver, sender):
-        """ Searchs Google Books for the arguement and displays info about
-            the first result. """
+        """ Searchs Youtube for the arguement and displays info about
+            the results. """
         if args == "$next":
             self.ytResultNum = self.ytResultNum + 1
             result = self.ytResults[self.ytResultNum]
