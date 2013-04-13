@@ -15,7 +15,7 @@ class BotModule(object):
         self.ytQueryUrl = "http://gdata.youtube.com/feeds/api/videos?alt=json&q="
 
     def register(self):
-        return {'functions': [{'gbooks': self.gbooks}, {'shorten': self.shorten}, {'youtube': self.youtube}]}
+        return {'functions': [{'gbooks': self.gbooks}, {'shorten': self.shorten}, {'youtube': self.youtube}], 'aliases': {'gb': 'gbooks', 'gbook': 'gbooks', 'short': 'shorten', 'yt': 'youtube', 'y': 'youtube'}}
 
     def gbooks(self, args, receiver, sender):
         """ Searchs Google Books for the arguement and displays info about the results. """
