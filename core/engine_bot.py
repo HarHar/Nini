@@ -16,19 +16,37 @@ def pushEvent(modules, event):
 				continue
 
 class user():
-	""" Dummy class to make it easier to deal with users.
-		Is loadable as a dictionary by using json.loads(repr(users)) """
+	""" Dummy class to make it easier to deal with users."""
 	nick = ''
 	host = ''
+	bot = None
+	def msg(self, text):
+		if bot != None:
+			bot.msg(self.nick, text)
+	def notice(self, text):
+		if bot != None:
+			bot.notice(self.nick, text)
 	def __repr__(self):
-		return '{"nick": "' + self.nick + '", "host": "' + self.host + '"}'
+		return '<User ' + self.nick + '>'
 
 class receiver():
 	""" Dummy class to make it easier to deal with who is receiving what """
 	name = ''
 	ischannel = False
+	def msg(self, text):
+		if bot != None:
+			bot.msg(self.name, text)
+	def notice(self, text):
+		if bot != None:
+			bot.notice(self.name, text)
+	def part(self):
+		if bot != None:
+			bot.part(self.name)
+	def join(self):
+		if bot != None:
+			bot.join(self.name)
 	def __repr__(self):
-		return '{"name": "' + self.name + '", "ischannel": ' + str(self.ischannel).lower() + '}'
+		return '<Receiver ' + self.name + '>'
 
 
 class Bot(object):
@@ -225,11 +243,13 @@ class Bot(object):
 		usr = user()
 		usr.nick = nickFrom
 		usr.host = host
+		usr.bot = self
 
 		#Dummy receiver object
 		rcv = receiver()
 		rcv.name = to
 		rcv.ischannel = True if to[0] == '#' or to[2:] in ['+#', '%#', '@#', '&#', '~#', '#'] else False
+		rcv.bot = self
 
 		#Dispatch
 		pushEvent(self.modules, {'name': 'msg', 'from': usr, 'admin': self.admin, 'to': rcv, 'msg': msg})
