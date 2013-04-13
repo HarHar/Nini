@@ -19,7 +19,7 @@ class BotModule(object):
 
     def gbooks(self, args, receiver, sender):
         """ Searchs Google Books for the arguement and displays info about the results. """
-        if args == "$next":
+        if args == self.bot.cmd_char + "next":
             self.gbResultNum = self.gbResultNum + 1
             result = self.gbResults['items'][self.gbResultNum]
         else:
@@ -45,7 +45,7 @@ class BotModule(object):
         self.bot.msg(receiver.name, chr(2) + 'Title: ' + chr(15) + title + 
                     chr(2) + ' Author(s): ' + chr(15) + author + chr(2) + ' Link: ' + chr(15) + link)
         if self.gbResultNum == 0:
-            self.bot.msg(receiver.name, "For the next result use '@gbook $next'")
+            self.bot.msg(receiver.name, "For the next result use '" + self.bot.cmd_char + "gbooks " + self.bot.cmd_char + "next'")
 
     def shorten(self, args, reciever, sender):
         """ Takes a url and provides a shortened goo.gl link. """
@@ -68,7 +68,7 @@ class BotModule(object):
         link = self.shortenUrl(result["link"][0]["href"])
         self.bot.msg(receiver.name, chr(2) + u'Title: ' + chr(15) + title + chr(2) + ' Link: ' + chr(15) + link)
         if self.ytResultNum == 0:
-            self.bot.msg(receiver.name, "For the next result use '@youtube $next'")
+            self.bot.msg(receiver.name, "For the next result use '" + self.bot.cmd_char + "youtube " + self.bot.cmd_char + "next'")
 
     def shortenUrl(self, url):
         data = json.dumps({'longUrl': url})
