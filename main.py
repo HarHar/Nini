@@ -61,6 +61,8 @@ if config:
 
 	newconf['domain'] = raw_input('What is your domain or IP address> ')
 
+	newconf['customURL'] = raw_input('Do you want me to use a custom URL for the base? [Leave blank or use a URL on the style of "http://domain.ext:port/"] ')
+
 	newconf['nick'] = raw_input('Nick> ')
 	newconf['nickservPass'] = raw_input('NickServ password [optional]> ')
 	newconf['channel'] = raw_input('Channels [separated by comma]> ')
