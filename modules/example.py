@@ -28,4 +28,10 @@ class BotModule(object):
 	def mod_replace(self, content):
 		if content['name'] == 'msg':
 			content['message'] = content['message'].replace('ASSHOLE', '[CENSORED]')
-		return content	
+		return content
+
+	##############
+	#Web Page
+	##############
+	def http(self, path):
+		return {'title': 'Example web page', 'content': '<p class="lead">This is a cute example page :3</p><p>It looks like you are on the page ' + path + '..</p>'}

@@ -8,6 +8,7 @@ import var
 import core.engine_bot
 import core.engine_botserver
 import core.engine_admin
+import core.engine_web
 
 import os
 import imp
@@ -54,6 +55,12 @@ if config:
 	while p.isdigit() == False: p = raw_input('Port [number only]> ')
 	newconf['port'] = int(p)
 
+	p = 'lol'
+	while p.isdigit() == False: p = raw_input('Port for web server [number only]> ')
+	newconf['webport'] = int(p)
+
+	newconf['domain'] = raw_input('What is your domain or IP address> ')
+
 	newconf['nick'] = raw_input('Nick> ')
 	newconf['nickservPass'] = raw_input('NickServ password [optional]> ')
 	newconf['channel'] = raw_input('Channels [separated by comma]> ')
@@ -61,6 +68,8 @@ if config:
 
 	newconf['admin_nick'] = raw_input('Your nick> ')
 	newconf['admin_host'] = raw_input('Your ident@host (or VHost)> ')
+
+
 
 	t = 'lol'
 	while (t in ['0', '1']) == False: t = raw_input('Command type [0 for prefix; 1 for affix]> ')
@@ -100,6 +109,10 @@ srv.start()
 admin = threading.Thread(target=core.engine_admin.start, args=(bot, modInstances))
 admin.setDaemon(True)
 admin.start()
+
+web = threading.Thread(target=core.engine_web.start, args=(config['webport'], config, bot, persistentVariables))
+web.setDaemon(True)
+web.start()
 
 #All stuff is threaded so we really don't have to do anything here
 #Maybe on the future there'll be a sort of interpretor
