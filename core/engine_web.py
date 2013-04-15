@@ -31,6 +31,8 @@ class MainHandler(tornado.web.RequestHandler):
 				if self.bot.modules.get(path[1:].split('/')[0]) != None:
 					try:
 						renderWith = self.bot.modules[path[1:].split('/')[0]]['instance'].http(path)
+						assert(renderWith.get('title') != None)
+						assert(renderWith.get('content') != None)
 					except Exception, e:
 						renderWith = self.noReturn
 				else:
