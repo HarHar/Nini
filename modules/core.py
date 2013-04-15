@@ -46,6 +46,6 @@ class BotModule(object):
 								out += '<p><span class="lead">' + doc[0].strip() + self.bot.cmd_char + '</span> '+ doc[2] + '</p>'
 					except:
 						continue
-				return {'title': 'Commands', 'content': out}
+				return {'title': 'Commands', 'content': out, 'mascot': 'Saber2'}
 			else:
 				return {'title': 'Core', 'content': 'Provides some cool stuff'}
