@@ -21,11 +21,11 @@ class user():
 	host = ''
 	bot = None
 	def msg(self, text):
-		if bot != None:
-			bot.msg(self.nick, text)
+		if self.bot != None:
+			self.bot.msg(self.nick, text)
 	def notice(self, text):
-		if bot != None:
-			bot.notice(self.nick, text)
+		if self.bot != None:
+			self.bot.notice(self.nick, text)
 	def __repr__(self):
 		return '<User ' + self.nick + '>'
 
@@ -33,18 +33,19 @@ class receiver():
 	""" Dummy class to make it easier to deal with who is receiving what """
 	name = ''
 	ischannel = False
+	bot = None
 	def msg(self, text):
-		if bot != None:
-			bot.msg(self.name, text)
+		if self.bot != None:
+			self.bot.msg(self.name, text)
 	def notice(self, text):
-		if bot != None:
-			bot.notice(self.name, text)
+		if self.bot != None:
+			self.bot.notice(self.name, text)
 	def part(self):
-		if bot != None:
-			bot.part(self.name)
+		if self.bot != None:
+			self.bot.part(self.name)
 	def join(self):
-		if bot != None:
-			bot.join(self.name)
+		if self.bot != None:
+			self.bot.join(self.name)
 	def __repr__(self):
 		return '<Receiver ' + self.name + '>'
 
