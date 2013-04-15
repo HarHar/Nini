@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-##Functions that do not really provides more features to the end-users
-##but nonetheless are useful as a module
 import os, inspect
 
 def fuzzyTail():
@@ -51,5 +49,3 @@ class BotModule(object):
 				return {'title': 'Commands', 'content': out}
 			else:
 				return {'title': 'Core', 'content': 'Provides some cool stuff'}
-
-		#return {'title': 'Example web page', 'content': '<p class="lead">This is a cute example page :3</p><p>It looks like you are on the page ' + path + '..</p>'}
