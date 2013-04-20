@@ -27,7 +27,9 @@ class BotModule(object):
             result = self.results[0]
         title = result['title']
         url = result['url']
-        self.bot.msg(receiver.name, chr(2) + 'Title: ' + chr(15) + title + chr(2) + ' Link: ' + chr(15) + url)
+        details = result['description'].replace('Remake', chr(3) + '04Remake' + chr(15))
+        details = details.replace('Trusted', chr(3) + '03Trusted' + chr(15))
+        self.bot.msg(receiver.name, chr(2) + 'Title: ' + chr(15) + title + chr(2) + ' Link: ' + chr(15) + url + ' ' + chr(2) + 'Details: ' + chr(15) + details)
         if self.resultNum == 0:
             self.bot.msg(receiver.name, "For the next result use '" + self.bot.cmd_char + "nyaa " + self.bot.cmd_char + "next'")
 	
@@ -41,7 +43,10 @@ class BotModule(object):
             title = self.get_tag_value(item.getElementsByTagName('title')[0])
             url = self.get_tag_value(item.getElementsByTagName('link')[0])
             url = url.replace("&amp;", "&")
-            results.append({'title':title,'url':url})
+            description = self.get_tag_value(item.getElementsByTagName('description')[0])
+            description = description.replace('<![CDATA[', '')
+            description = description.replace(']]>', '')
+            results.append({'title': title, 'url': url, 'description': description})
         return results
 
     def get_tag_value(self, node):
