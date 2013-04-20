@@ -15,7 +15,7 @@ class BotModule(object):
         return {'functions': [{'nyaa' : self.nyaaSearch}]}
 
     def nyaaSearch(self, args, receiver, sender):
-        """ nyaa [search term] | Searches nyaa.eu torrents """
+        """ nyaa [search term] | True | Searches nyaa.eu torrents """
         if args == self.bot.cmd_char + "next":
             self.resultNum = self.resultNum + 1
             result = self.results[self.resultNum]
