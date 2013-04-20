@@ -40,6 +40,7 @@ class BotModule(object):
         for item in items:
             title = self.get_tag_value(item.getElementsByTagName('title')[0])
             url = self.get_tag_value(item.getElementsByTagName('link')[0])
+            url = url.replace("&amp;", "&")
             results.append({'title':title,'url':url})
         return results
 
