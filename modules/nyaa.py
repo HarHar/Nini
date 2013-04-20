@@ -25,7 +25,8 @@ class BotModule(object):
             args = quote(args)
             self.results = self.search(args)
             if len(self.results) == 0:
-                receiver.msg(chr(3) + '02Error' + chr(15) + ' no results found')
+                receiver.msg(chr(3) + '04Error' + chr(15) + ' no results found')
+                return
             result = self.results[0]
         title = result['title']
         url = result['url']
