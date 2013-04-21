@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
-import pickle
+import json
 
 #Persistent variables
 class persVars(object):
@@ -14,7 +14,7 @@ class persVars(object):
 
 		varfile = os.path.join(self.vardir + item + '.var')
 		if os.path.exists(varfile):
-			return pickle.load(open(varfile, 'r'))
+			return json.load(open(varfile, 'r'))
 		else:
 			return {}
 	def __setitem__(self, item, content):
@@ -23,4 +23,4 @@ class persVars(object):
 			return None
 
 		varfile = os.path.join(self.vardir + item + '.var')
-		pickle.dump(content, open(varfile, 'w'))
+		json.dump(content, open(varfile, 'w'))
