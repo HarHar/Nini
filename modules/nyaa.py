@@ -21,7 +21,6 @@ class BotModule(object):
             result = self.results[self.resultNum]
         else:
             self.resultNum = 0
-            args = args.replace(' ', '+')
             args = quote(args)
             self.results = self.search(args)
             if len(self.results) == 0:
@@ -39,7 +38,7 @@ class BotModule(object):
     def search(self, term):
         results = []
 
-        rss = minidom.parse(urlopen("http://www.nyaa.eu/?page=rss&term="+quote(term)))
+        rss = minidom.parse(urlopen("http://www.nyaa.eu/?page=rss&term="+term))
         items = rss.getElementsByTagName('item')
 
         for item in items:
