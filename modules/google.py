@@ -54,7 +54,7 @@ class BotModule(object):
 
     def youtube(self, args, receiver, sender):
         """ youtube [query] | True | Searchs Youtube for the argument and displays info about the results. """
-        if args == "$next":
+        if args == self.bot.cmd_char + "next":
             self.ytResultNum = self.ytResultNum + 1
             result = self.ytResults[self.ytResultNum]
         else:
