@@ -28,13 +28,14 @@ class BotModule(object):
                 return
             result = self.results[0]
         title = result['title']
+        category = result['category']
         try:
             url = self.bot.modules['google']['instance'].shortenUrl(result['url'])
         except:
             url = result['url']
-        details = result['description'].replace('Remake', chr(3) + '04Remake' + chr(15))
-        details = details.replace('Trusted', chr(3) + '03Trusted' + chr(15))
-        self.bot.msg(receiver.name, chr(2) + 'Title: ' + chr(15) + title + chr(2) + ' Link: ' + chr(15) + url + ' ' + chr(2) + 'Details: ' + chr(15) + details)
+        details = result['description'].replace('Remake', chr(15) + chr(3) + '04Remake' + chr(15))
+        details = details.replace('Trusted', chr(15) + chr(3) + '03Trusted' + chr(15))
+        self.bot.msg(receiver.name, chr(3) + '08[' + category + '] ' + chr(15) + title + ' [' + chr(3) + '14' + details + ']' + chr(15) + ' - ' + chr(2) +  url)
         if self.resultNum == 0:
             self.bot.msg(receiver.name, "For the next result use '" + self.bot.cmd_char + "nyaa " + self.bot.cmd_char + "next'")
 	
@@ -51,7 +52,8 @@ class BotModule(object):
             description = self.get_tag_value(item.getElementsByTagName('description')[0])
             description = description.replace('<![CDATA[', '')
             description = description.replace(']]>', '')
-            results.append({'title': title, 'url': url, 'description': description})
+            category = self.get_tag_value(item.getElementsByTagName('category')[0])
+            results.append({'title': title, 'url': url, 'description': description, 'category': category})
         return results
 
     def get_tag_value(self, node):
