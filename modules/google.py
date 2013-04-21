@@ -61,7 +61,11 @@ class BotModule(object):
             self.ytResultNum = 0
             args = args.replace(' ', '+')
             args = quote(args)
-            self.ytResults = json.load(urlopen(self.ytQueryUrl + args + '&key=' + self.apiKey))["feed"]["entry"]
+            try:
+                self.ytResults = json.load(urlopen(self.ytQueryUrl + args + '&key=' + self.apiKey))["feed"]["entry"]
+            except KeyError:
+                receiver.msg(chr(3) + '04Error ' + chr(15) + ' no results found')
+                return
             result = self.ytResults[0]
         title = result["title"]["$t"].encode("ascii", "ignore")
         link = self.shortenUrl(result["link"][0]["href"])
