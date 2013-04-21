@@ -29,7 +29,7 @@ class BotModule(object):
 			sender.msg('I am hosting my command list at ' + chr(2) + URL)
 
 
-	def http(self, path):
+	def http(self, path, handler):
 		p = path.split('/')
 		#p[0] == '', p[1] == 'core', p[2] == 'SOMEPAGE', p[3] == '' <-- example
 

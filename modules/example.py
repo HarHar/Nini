@@ -33,5 +33,5 @@ class BotModule(object):
 	##############
 	#Web Page
 	##############
-	def http(self, path):
+	def http(self, path, handler):
 		return {'title': 'Example web page', 'content': '<p class="lead">This is a cute example page :3</p><p>It looks like you are on the page ' + path + '..</p>'}

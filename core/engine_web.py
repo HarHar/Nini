@@ -27,7 +27,7 @@ class MainHandler(tornado.web.RequestHandler):
 				return
 			elif os.path.exists(os.path.join(self.path, 'web/'+ p +'.png')):
 				self.write(open(os.path.join(self.path, 'web/'+ p +'.png'), 'r').read())
-				return				
+				return
 		else:
 			#Render
 			template = open(os.path.join(self.path, 'web/template.html'), 'r').read()
@@ -38,7 +38,7 @@ class MainHandler(tornado.web.RequestHandler):
 			else:
 				if self.bot.modules.get(path[1:].split('/')[0]) != None:
 					try:
-						renderWith = self.bot.modules[path[1:].split('/')[0]]['instance'].http(path)
+						renderWith = self.bot.modules[path[1:].split('/')[0]]['instance'].http(path, self)
 						if renderWith.get('mascot') in ['', None]:
 							renderWith['mascot'] = 'Saber'
 						assert(renderWith.get('title') != None)
