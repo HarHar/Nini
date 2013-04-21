@@ -67,7 +67,7 @@ class BotModule(object):
                 receiver.msg(chr(3) + '04Error ' + chr(15) + ' no results found')
                 return
             result = self.ytResults[0]
-        title = result["title"]["$t"].encode("ascii", "ignore")
+        title = result["title"]["$t"]
         link = self.shortenUrl(result["link"][0]["href"])
         self.bot.msg(receiver.name, chr(2) + u'Title: ' + chr(15) + title + chr(2) + ' Link: ' + chr(15) + link)
         if self.ytResultNum == 0:

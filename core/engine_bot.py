@@ -116,7 +116,7 @@ class Bot(object):
 						for alias in toRegister['aliases']:
 							self.aliases[alias] = {'target': toRegister['aliases'][alias], 'module': self.modules[instance]}
 	def sockSend(self, s):
-		self.sock.send(s + '\r\n')
+		self.sock.send(s.encode('utf-8') + '\r\n')
 	def msg(self, who, message):
 		for mod in self.modifiers:
 			if self.modifiers[mod]['module']['enabled']:
