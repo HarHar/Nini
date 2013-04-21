@@ -28,7 +28,10 @@ class BotModule(object):
                 return
             result = self.results[0]
         title = result['title']
-        url = result['url']
+        try:
+            url = self.bot.modules['google']['instance'].shortenUrl(result['url'])
+        except:
+            url = result['url']
         details = result['description'].replace('Remake', chr(3) + '04Remake' + chr(15))
         details = details.replace('Trusted', chr(3) + '03Trusted' + chr(15))
         self.bot.msg(receiver.name, chr(2) + 'Title: ' + chr(15) + title + chr(2) + ' Link: ' + chr(15) + url + ' ' + chr(2) + 'Details: ' + chr(15) + details)
