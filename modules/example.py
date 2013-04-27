@@ -13,8 +13,8 @@ class BotModule(object):
 			split = ev['msg'].split(' ')
 
 			if split[0].lower() == '$test':
-				self.bot.msg(ev['to'].name, 'It works .‿.')
-
+				self.bot.msg(ev['to'].name, u'It works .‿.')
+				
 	##############
 	#Registered command
 	##############
