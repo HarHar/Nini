@@ -3,6 +3,10 @@
 from urllib2 import urlopen
 from urllib import quote
 from xml.dom import minidom
+import libtorrent as lt
+from byteformat import format as fmt
+from time import sleep
+import os
 
 class BotModule(object):
     """ Searches torrents on nyaa.eu """
@@ -10,6 +14,8 @@ class BotModule(object):
         self.storage = storage
         self.admins = {}
         self.bot = None
+        self.resultNum = 'apparently zero is false too so I gotta fill this up with something else, such is life'
+        self.results = []
 
     def register(self):
         return {'functions': [{'nyaa' : self.nyaaSearch}]}
@@ -19,6 +25,34 @@ class BotModule(object):
         if args == self.bot.cmd_char + "next":
             self.resultNum = self.resultNum + 1
             result = self.results[self.resultNum]
+        elif args in [self.bot.cmd_char + "details", self.bot.cmd_char + "detail"]:
+            if isinstance(self.resultNum, str) == False and self.results != []:
+                receiver.msg('Fetching torrent file...')
+                entry = self.results[self.resultNum]
+                e = lt.bdecode(urlopen(entry['url']).read())
+                info = lt.torrent_info(e)
+                maxfiles = 3
+
+                trackers = []
+                for x in info.trackers():
+                    trackers.append(x)
+                comment = '[' + chr(3) + '14Comment "' + info.comment() + '"' + chr(15) + ']' if info.comment() != '' else ''
+
+                msg = []
+                msg.append(('{0}' + ' [' + chr(3) + '14{5} files, {1} in total' + chr(15) + '] [' + chr(3) + '14Created on {2}' + chr(15) +'] [' + chr(3) + '14Announce on {3}' + chr(15) +'] {4}').format(info.name(), fmt(info.total_size()), str(info.creation_date()), trackers[0].url.replace('udp://', '').replace('http://', '').split('/')[0], comment, str(info.num_files())))
+                if info.num_files() != 0:
+                    if info.files()[0].path != info.name():
+                        for f in info.files()[:maxfiles]:
+                            msg.append(('{0}' + chr(15) + ' [' + chr(3) + '14{1}' + chr(15) + ']').format(os.path.basename(f.path), fmt(f.size)))
+
+                for message in msg:
+                    receiver.msg(message)
+                    sleep(1)
+
+                return
+            else:
+                receiver.msg('You need to search for something first')
+                return
         else:
             self.resultNum = 0
             args = quote(args)
@@ -37,7 +71,7 @@ class BotModule(object):
         details = details.replace('Trusted', chr(15) + chr(3) + '03Trusted' + chr(15))
         self.bot.msg(receiver.name, chr(3) + '08[' + category + '] ' + chr(15) + title + ' [' + chr(3) + '14' + details + ']' + chr(15) + ' - ' + chr(2) +  url)
         if self.resultNum == 0:
-            self.bot.msg(receiver.name, "For the next result use '" + self.bot.cmd_char + "nyaa " + self.bot.cmd_char + "next'")
+            self.bot.msg(receiver.name, "For details use '" + self.bot.cmd_char + "nyaa " + self.bot.cmd_char + "details', for the next result use '" + self.bot.cmd_char + "nyaa " + self.bot.cmd_char + "next'")
 	
     def search(self, term):
         results = []
