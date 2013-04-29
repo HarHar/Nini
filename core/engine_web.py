@@ -45,6 +45,7 @@ class MainHandler(tornado.web.RequestHandler):
 						assert(renderWith.get('content') != None)
 					except Exception, e:
 						renderWith = self.noReturn
+						renderWith['content'] += '<br />' + str(e)
 				else:
 					renderWith = self.noExist
 
