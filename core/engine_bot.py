@@ -261,7 +261,7 @@ class Bot(object):
 
 def handlingThread(sock, bot):
 	while bot.active:
-		rcvd = sock.recv(4096).split('\n')
+		rcvd = sock.recv(4096).decode('utf-8').split('\n')
 		for line in rcvd:
 			line = line.replace('\r', '')
 
