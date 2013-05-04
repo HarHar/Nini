@@ -262,7 +262,12 @@ class Bot(object):
 
 def handlingThread(sock, bot):
 	while bot.active:
-		rcvd = sock.recv(4096).decode('utf-8').split('\n')
+		rcvd = sock.recv(4096)
+		try:
+			rcvd = rcvd.decode('utf-8')
+		except UnicodeDecodeError:
+			pass
+		rcvd = rcvd.split('\n')
 		for line in rcvd:
 			line = line.replace('\r', '')
 
