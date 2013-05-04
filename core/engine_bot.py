@@ -152,15 +152,16 @@ class Bot(object):
 		self.sockSend('JOIN ' + channel + passw)
 
 		pushEvent(self.modules, {'name': 'selfjoin', 'channel': channel})
-	def kick(self, channel, who):
+	def kick(self, channel, who, reason):
 		for mod in self.modifiers:
 			if self.modifiers[mod]['module']['enabled']:
-				res = self.modifiers[mod]['func']({'name': 'selfkick', 'channel': channel, 'who': who})
+				res = self.modifiers[mod]['func']({'name': 'selfkick', 'channel': channel, 'who': who, 'reason': reason})
 				channel = res['channel']
 				who = res['who']
+				reason = res['reason']
 				if res.get('block') != None: return
 
-		self.sockSend('KICK ' + channel + ' ' + who)
+		self.sockSend('KICK ' + channel + ' ' + who + ' :' + reason)
 	def mode(self, mode):
 		for mod in self.modifiers:
 			if self.modifiers[mod]['module']['enabled']:
