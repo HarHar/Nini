@@ -49,9 +49,9 @@ class MainHandler(tornado.web.RequestHandler):
 				else:
 					renderWith = self.noExist
 
-			if rendered.get('max-width') == None: rendered['max-width'] = '680px'
+			if renderWith.get('max-width') == None: renderWith['max-width'] = '680px'
 
-			rendered = unicode(template).replace('##TITLE##', renderWith['title']).replace('##CONTENT##', renderWith['content']).replace('##BOTNAME##', self.bot.nick).replace('##MAX-WIDTH##', rendered['max-width'])
+			rendered = unicode(template).replace('##TITLE##', renderWith['title']).replace('##CONTENT##', renderWith['content']).replace('##BOTNAME##', self.bot.nick).replace('##MAX-WIDTH##', renderWith['max-width'])
 			for key in renderWith:
 				rendered = rendered.replace('##' + key.upper() + '##', renderWith[key])
 			self.write(rendered)
