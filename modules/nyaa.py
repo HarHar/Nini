@@ -133,7 +133,7 @@ class BotModule(object):
                     for f in self.torrentInfo.files():
                         out += ('{0} [{1}]').format(os.path.basename(f.path), fmt(f.size)) + '<br />'
 
-                    return {'title': self.torrentInfo.name(), 'content': out, 'mascot': 'Saber'}
+                    return {'title': self.torrentInfo.name(), 'content': out, 'mascot': 'Saber', 'max-width': '1024px'}
                 else:
                     return {'title': 'No torrent selected', 'content': 'Please use the nyaa search command and refresh this page', 'mascot': 'Saber'}
             
