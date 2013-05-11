@@ -8,6 +8,7 @@ class BotModule(object):
 		self.bot = None
 	def event(self, ev):
 		if ev['name'] == 'msg':
+			if ev['from'].nick == self.bot.nick: return
 			split = ev['msg'].split(' ')
 
 			if (ev['to'].ischannel == False) and (ev['from'].host == ev['admin'].host):
