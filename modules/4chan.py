@@ -60,6 +60,8 @@ class BotModule(object):
 
 	def printThread(self, thread, receiver):
 		""" Pretty prints a thread"""
+		cut = lambda item: len(item) > 150 and item[:150] + '(...)' or item
+
 		try:
 			subject = thread['sub']
 		except:
@@ -70,7 +72,7 @@ class BotModule(object):
 			comment = comment.replace('<br>', ' | ')
 			comment = comment.replace('</wbr>', '')
 			comment = comment.replace('<wbr>', '')
-			comment = HTMLEntitiesToUnicode(comment)
+			comment = cut(HTMLEntitiesToUnicode(comment))
 		except:
 			comment = "No Comment"
 		name = thread['name']
@@ -82,5 +84,5 @@ class BotModule(object):
 			link = self.bot.modules['google']['instance'].shortenUrl(link)
 		except:
 			pass
-			
+
 		self.bot.msg(receiver, chr(3) + '12' + name + chr(15) + " >>> " + chr(3) + '13' + subject + chr(15) + " >>> " + chr(3) + '12' + comment + chr(15) + " >>> " + chr(3) + '13' + replyNum + "/" + imageNum + chr(15) + " >>> " + chr(3) + '2' + link)
