@@ -31,7 +31,7 @@ class BotModule(object):
 			self.printThread(self.results[self.resultNum], receiver.name)
 			self.resultNum += 1
 			return
-		board = args.rsplit(" ")[0]
+		board = args.rsplit(" ")[0].replace('/', '')
 		self.currentBoard = board
 		query = args.rsplit(" ")[1].lower()
 		try:
