@@ -78,4 +78,9 @@ class BotModule(object):
 		replyNum = str(thread['replies']+1)
 		imageNum = str(thread['images']+1)
 		link = "https://boards.4chan.org/" + self.currentBoard + "/res/" + str(thread['no'])
+		try:
+			link = self.bot.modules['google']['instance'].shortenUrl(link)
+		except:
+			pass
+			
 		self.bot.msg(receiver, chr(3) + '12' + name + chr(15) + " >>> " + chr(3) + '13' + subject + chr(15) + " >>> " + chr(3) + '12' + comment + chr(15) + " >>> " + chr(3) + '13' + replyNum + "/" + imageNum + chr(15) + " >>> " + chr(3) + '2' + link)
