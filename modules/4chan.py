@@ -2,6 +2,12 @@
 # -*- coding: utf-8 -*-
 import json
 from urllib2 import urlopen
+from BeautifulSoup import BeautifulStoneSoup
+
+def HTMLEntitiesToUnicode(text):
+    """Converts HTML entities to unicode.  For example '&amp;' becomes '&'."""
+    text = unicode(BeautifulStoneSoup(text, convertEntities=BeautifulStoneSoup.ALL_ENTITIES))
+    return text
 
 class BotModule(object):
 	def __init__(self, storage):
@@ -60,6 +66,11 @@ class BotModule(object):
 			subject = "No Subject"
 		try:
 			comment = thread['com']
+			comment = comment.replace('<br><br><br><br>', '<br>').replace('<br><br><br>', '<br>').replace('<br><br>', '<br>') #in case someone uses 4 consecutive newlines or something
+			comment = comment.replace('<br>', ' | ')
+			comment = comment.replace('</wbr>', '')
+			comment = comment.replace('<wbr>', '')
+			comment = HTMLEntitiesToUnicode(comment)
 		except:
 			comment = "No Comment"
 		name = thread['name']
@@ -67,4 +78,4 @@ class BotModule(object):
 		replyNum = str(thread['replies']+1)
 		imageNum = str(thread['images']+1)
 		link = "https://boards.4chan.org/" + self.currentBoard + "/res/" + str(thread['no'])
-		self.bot.msg(receiver, name + " >>> " + subject + " >>> " + comment + " >>> " + replyNum + "/" + imageNum + " >>> " + link)
+		self.bot.msg(receiver, chr(3) + '12' + name + chr(15) + " >>> " + chr(3) + '13' + subject + chr(15) + " >>> " + chr(3) + '12' + comment + chr(15) + " >>> " + chr(3) + '13' + replyNum + "/" + imageNum + chr(15) + " >>> " + chr(3) + '2' + link)
