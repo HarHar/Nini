@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os, inspect
+import sys
 
 def fuzzyTail():
 	pass
@@ -11,7 +12,7 @@ class BotModule(object):
 		self.admins = {}
 		self.bot = None
 	def register(self):
-		return {'functions': [{'help': self.cmd_help}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
+		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'restart': self.restart}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
 	def event(self, ev):
 		pass
 	def cmd_help(self, args, receiver, sender):
@@ -28,6 +29,12 @@ class BotModule(object):
 		else:
 			sender.msg('I am hosting my command list at ' + chr(2) + URL)
 
+	def quit(self, args, receiver, sender):
+		self.bot.msg(receiver.name, "Exiting on user command")
+		self.bot.quit()
+
+	def restart(self, args, receiver, sender):
+		self.bot.msg(receiver.name, "IMPLEMENT ME")
 
 	def http(self, path, handler):
 		p = path.split('/')

@@ -3,18 +3,17 @@
 This is where we instanciate stuff
 """
 import threading
+from time import sleep
+import os
+import imp
+import traceback
+import sys
 
 import var
 import core.engine_bot
 import core.engine_botserver
 import core.engine_admin
 import core.engine_web
-
-import os
-import imp
-import traceback
-
-import sys
 
 def massload(folder):
 	modls = {}
@@ -118,7 +117,6 @@ web.start()
 
 #All stuff is threaded so we really don't have to do anything here
 #Maybe on the future there'll be a sort of interpretor
-from time import sleep
 while True:
 	try:
 		sleep(420)#blazeitfgt
