@@ -30,10 +30,12 @@ class BotModule(object):
 			sender.msg('I am hosting my command list at ' + chr(2) + URL)
 
 	def quit(self, args, receiver, sender):
+		"""quit | False | quits bot """
 		self.bot.msg(receiver.name, "Exiting on user command")
 		self.bot.quit()
 
 	def restart(self, args, receiver, sender):
+		"""quit | False | restarts bot """
 		self.bot.msg(receiver.name, "IMPLEMENT ME")
 
 	def http(self, path, handler):
