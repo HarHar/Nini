@@ -33,6 +33,7 @@ class BotModule(object):
 			return
 		if len(args.split(' ')) <= 1:
 			receiver.msg(chr(3) + '4Error!' + chr(15) + ' You need to specify board and query terms')
+			return
 
 		board = args.rsplit(" ")[0].replace('/', '')
 		self.currentBoard = board
