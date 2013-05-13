@@ -232,6 +232,15 @@ class Bot(object):
 		args = args[:-1]
 
 		for cmd in self.commands:
+			try:
+				doc = self.commands[cmd]['func'].__doc__.split('|')
+				assert(isinstance(eval(doc[1]), dict))
+			except:
+				doc = ['', "{'public': True, 'admin_only': False}", '']
+
+			if eval(doc[1])['admin_only'] and usr.host != self.admin.host:
+				continue
+
 			if self.commands[cmd]['module']['enabled']:
 				if self.cmd_type == 0:
 					if split[0].lower() == self.cmd_char + cmd.lower():
