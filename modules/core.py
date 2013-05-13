@@ -35,7 +35,7 @@ class BotModule(object):
 		self.bot.quit()
 
 	def restart(self, args, receiver, sender):
-		"""quit | {'public': False, 'admin_only': True} | restarts bot """
+		"""restart | {'public': False, 'admin_only': True} | restarts bot """
 		self.bot.msg(receiver.name, "IMPLEMENT ME")
 
 	def http(self, path, handler):
