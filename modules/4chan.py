@@ -14,16 +14,8 @@ class BotModule(object):
 		self.storage = storage
 		self.admins = {}
 		self.bot = None
-
 	def register(self):
 		return {'functions': [{'4chan': self.search4chan}]}
-
-	def event(self, ev):
-		if ev['name'] == 'msg':
-			split = ev['msg'].split(' ')
-
-			if split[0].lower() == '$test':
-				self.bot.msg(ev['to'].name, u'It works .‿.')
 				
 	def search4chan(self, args, receiver, sender):
 		""" 4chan | True | Searches a specified 4chan board and returns any threads that match."""
