@@ -31,6 +31,9 @@ class BotModule(object):
 			self.printThread(self.results[self.resultNum], receiver.name)
 			self.resultNum += 1
 			return
+		if len(args.split(' ')) <= 1:
+			receiver.msg(chr(3) + '4Error!' + chr(15) + ' You need to specify board and query terms')
+
 		board = args.rsplit(" ")[0].replace('/', '')
 		self.currentBoard = board
 		query = args.rsplit(" ")[1].lower()
