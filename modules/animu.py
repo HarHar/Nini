@@ -183,7 +183,7 @@ class BotModule(object):
 		pass
 
 	def cmd_groups(self, args, receiver, sender):
-		"""groups [anime] | True | Returns list of subbing groups for given anime"""
+		"""groups [anime] | {'public': True, 'admin_only': False} | Returns list of subbing groups for given anime"""
 		more = False
 		if len(args) == 0: receiver.msg('Missing parameter')
 

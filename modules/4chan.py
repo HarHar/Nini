@@ -18,7 +18,7 @@ class BotModule(object):
 		return {'functions': [{'4chan': self.search4chan}]}
 				
 	def search4chan(self, args, receiver, sender):
-		""" 4chan | True | Searches a specified 4chan board and returns any threads that match."""
+		""" 4chan | {'public': True, 'admin_only': False} | Searches a specified 4chan board and returns any threads that match."""
 		if args == "$next":
 			self.printThread(self.results[self.resultNum], receiver.name)
 			self.resultNum += 1

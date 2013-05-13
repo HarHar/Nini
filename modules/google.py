@@ -18,7 +18,7 @@ class BotModule(object):
         return {'functions': [{'gbooks': self.gbooks}, {'shorten': self.shorten}, {'youtube': self.youtube}], 'aliases': {'gb': 'gbooks', 'gbook': 'gbooks', 'short': 'shorten', 'yt': 'youtube', 'y': 'youtube'}}
 
     def gbooks(self, args, receiver, sender):
-        """ gbooks [book title or author] | True | Searchs Google Books for the arguement and displays info about the results. """
+        """ gbooks [book title or author] | {'public': True, 'admin_only': False} | Searchs Google Books for the arguement and displays info about the results. """
         if args == self.bot.cmd_char + "next":
             self.gbResultNum = self.gbResultNum + 1
             result = self.gbResults['items'][self.gbResultNum]
@@ -48,12 +48,12 @@ class BotModule(object):
             self.bot.msg(receiver.name, "For the next result use '" + self.bot.cmd_char + "gbooks " + self.bot.cmd_char + "next'")
 
     def shorten(self, args, reciever, sender):
-        """ shorten [url] | True | Takes a url and provides a shortened goo.gl link. """
+        """ shorten [url] | {'public': True, 'admin_only': False} | Takes a url and provides a shortened goo.gl link. """
         link = self.shortenUrl(args)
         self.bot.msg(reciever.name, sender.nick + ': ' + link)
 
     def youtube(self, args, receiver, sender):
-        """ youtube [query] | True | Searchs Youtube for the argument and displays info about the results. """
+        """ youtube [query] | {'public': True, 'admin_only': False} | Searchs Youtube for the argument and displays info about the results. """
         if args == self.bot.cmd_char + "next":
             self.ytResultNum = self.ytResultNum + 1
             result = self.ytResults[self.ytResultNum]

@@ -16,7 +16,7 @@ class BotModule(object):
 	def event(self, ev):
 		pass
 	def cmd_help(self, args, receiver, sender):
-		"""help | True | shows where to get a list of commands"""
+		"""help | {'public': True, 'admin_only': False} | shows where to get a list of commands"""
 		baseURL = ''
 		if (self.storage['config'].get('customURL') in [None, '']) == False:
 			baseURL = self.storage['config']['customURL']
@@ -30,12 +30,12 @@ class BotModule(object):
 			sender.msg('I am hosting my command list at ' + chr(2) + URL)
 
 	def quit(self, args, receiver, sender):
-		"""quit | False | quits bot """
+		"""quit | {'public': False, 'admin_only': False} | quits bot """
 		self.bot.msg(receiver.name, "Exiting on user command")
 		self.bot.quit()
 
 	def restart(self, args, receiver, sender):
-		"""quit | False | restarts bot """
+		"""quit | {'public': False, 'admin_only': False} | restarts bot """
 		self.bot.msg(receiver.name, "IMPLEMENT ME")
 
 	def http(self, path, handler):
@@ -48,7 +48,7 @@ class BotModule(object):
 				for cmd in self.bot.commands:
 					try:
 						doc = self.bot.commands[cmd]['func'].__doc__.split('|')
-						if bool(doc[1]):
+						if eval(doc[1])['public'] == True:
 							if self.bot.cmd_type == 0:
 								out += '<p><span class="lead">' + self.bot.cmd_char + doc[0].strip() + '</span> '+ doc[2] + '</p>'
 							else:

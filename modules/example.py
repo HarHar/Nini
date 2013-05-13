@@ -20,7 +20,7 @@ class BotModule(object):
 	##############
 	def cmd_test2(self, args, receiver, sender):
 		"""test2 | True | Ping-pong"""
-		self.bot.msg(receiver.name, 'This works too \\^ ^')
+		self.bot.msg(receiver.name, 'This works too \\^ \\^')
 
 	##############
 	#Modifier

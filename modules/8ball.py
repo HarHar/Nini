@@ -9,7 +9,7 @@ class BotModule(object):
 	def register(self):
 		return {'functions': [{'8ball': self.cmd_8ball}, {'choose': self.cmd_choose}]}
 	def cmd_8ball(self, args, receiver, sender):
-		"""8ball [question] | True | Answers a yes/no question"""
+		"""8ball [question] | {'public': True, 'admin_only': False} | Answers a yes/no question"""
 		if args == '':
 			self.bot.msg(receiver.name, 'Need a question, sly')
 			return
@@ -22,7 +22,7 @@ class BotModule(object):
 			self.bot.msg(receiver.name, chr(2) + 'Question: ' + chr(15) + fixed)
 			self.bot.msg(receiver.name, chr(2) + 'Answer: ' + chr(15) + random.choice(self.answers))
 	def cmd_choose(self, args, receiver, sender):
-		"""choose one, two or three | True | Picks one of the items you give"""
+		"""choose one, two or three | {'public': True, 'admin_only': False} | Picks one of the items you give"""
 		if receiver.ischannel:
 			if args.find('or') != -1:
 				s = args.split(' or ')
