@@ -83,25 +83,33 @@ if config:
 	print 'Saved'
 	print 'Continuing boot procedure'
 
-directory = os.path.dirname(os.path.realpath(__file__))
-modules = massload(os.path.join(directory, 'modules/'))
-modInstances = {}
-for module in modules:
-	try:
-		sys.stdout.write('Loading ' + repr(module) + '... ')
-		modInstances[module] = {'instance': modules[module].BotModule(persistentVariables), 'enabled': True}
-		sys.stdout.write('[\033[92mdone\033[0m]\n')
-	except AttributeError:
-		sys.stdout.write('[\033[93mwarning\033[0m]\n')
-	except:
-		sys.stdout.write('[\033[91merror\033[0m]\n')
+def loadModsWrapper(persV):
+	ret = {}
+	directory = os.path.dirname(os.path.realpath(__file__))
+
+	modules = massload(os.path.join(directory, 'modules/'))
+	for module in modules:
+		try:
+			sys.stdout.write('Loading ' + repr(module) + '... ')
+			ret[module] = {'instance': modules[module].BotModule(persV), 'enabled': True}
+			sys.stdout.write('[\033[92mdone\033[0m]\n')
+		except AttributeError:
+			sys.stdout.write('[\033[93mwarning\033[0m]\n')
+		except Exception, e:
+			sys.stdout.write('[\033[91merror - (' + str(e) + ')\033[0m]\n')
+	return ret
+
+#directory = os.path.dirname(os.path.realpath(__file__))
+#modules = massload(os.path.join(directory, 'modules/'))
 
 config = persistentVariables['config']
+
+modInstances = loadModsWrapper(persistentVariables)
 
 adm = core.engine_bot.user()
 adm.nick = config['admin_nick']
 adm.host = config['admin_host']
-bot = core.engine_bot.Bot(server=config['server'], serverPassword=config['serverPassword'], port=config['port'], nick=config['nick'], nickservPass=config['nickservPass'], channel=config['channel'], adminPassword=config['adminPassword'], modules=modInstances, cmd_type=config['cmd_type'], cmd_char=config['cmd_char'], admin=adm) #We need to go wider
+bot = core.engine_bot.Bot(server=config['server'], serverPassword=config['serverPassword'], port=config['port'], nick=config['nick'], nickservPass=config['nickservPass'], channel=config['channel'], adminPassword=config['adminPassword'], modules=modInstances, cmd_type=config['cmd_type'], cmd_char=config['cmd_char'], admin=adm, loadModules_func=loadModsWrapper, persVars=persistentVariables) #We need to go wider
 
 srv = threading.Thread(target=core.engine_botserver.start, args=(bot, modInstances))
 srv.setDaemon(True)

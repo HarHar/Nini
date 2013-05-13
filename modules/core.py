@@ -12,7 +12,7 @@ class BotModule(object):
 		self.admins = {}
 		self.bot = None
 	def register(self):
-		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'restart': self.restart}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
+		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
 	def event(self, ev):
 		pass
 	def cmd_help(self, args, receiver, sender):
@@ -34,9 +34,25 @@ class BotModule(object):
 		self.bot.msg(receiver.name, "Exiting on user command")
 		self.bot.quit()
 
-	def restart(self, args, receiver, sender):
-		"""restart | {'public': False, 'admin_only': True} | restarts bot """
-		self.bot.msg(receiver.name, "IMPLEMENT ME")
+	def modules(self, args, receiver, sender):
+		"""modules [unload/reload] | {'public': False, 'admin_only': True} | controls modules """
+		s = args.lower().split()
+
+		if len(s) == 0: return
+
+		if s[0] == 'unload':
+			receiver.msg('Unloading modules...')
+			self.bot.unloadModules()
+			receiver.msg('Done')
+		elif s[0] == 'reload':
+			receiver.msg('Reloading modules...')
+			self.bot.reloadModules()
+			receiver.msg('Done')
+		elif s[0] == 'load':
+			receiver.msg('This command is not implemented since it wouldn\'t be possible for it to be usable')
+			receiver.msg('If you wish to load all modules you should go to the admin interface and type "/msg $eval bot.loadModules()"')
+		else:
+			receiver.msg('Arguments: [unload/reload]')
 
 	def http(self, path, handler):
 		p = path.split('/')

@@ -51,7 +51,7 @@ class receiver():
 
 
 class Bot(object):
-	def __init__(self, server='localhost', serverPassword='', port=6667, nick='KB', nickservPass='', channel='', channelPassword='', modules={}, adminPassword='default', cmd_type=0, cmd_char='$', admin=user()):
+	def __init__(self, server='localhost', serverPassword='', port=6667, nick='KB', nickservPass='', channel='', channelPassword='', modules={}, adminPassword='default', cmd_type=0, cmd_char='$', admin=user(), loadModules_func=None, persVars=None):
 		self.modules = modules
 		self.server = server
 		self.serverPassword = serverPassword
@@ -69,6 +69,8 @@ class Bot(object):
 		self.joinedChannels = []
 		self.ignores = {}
 		self.admin = admin
+		self.loadModules_func = loadModules_func
+		self._persVars = persVars
 
 		#Connection/authentication routine
 		self.sock = socket.socket()
@@ -87,6 +89,8 @@ class Bot(object):
 		for module in modules:
 			modules[module]['instance'].bot = self
 
+		self.registerCommands()
+
 	def onWelcome(self):
 		sleep(1)
 		if self.nickservPass != '':
@@ -95,6 +99,28 @@ class Bot(object):
 		if self.channel != '':
 			self.join(self.channel)
 			self.joinedChannels = self.channel.replace(' ', '').split(',')
+
+	def unloadModules(self):
+		pushEvent(self.modules, {'name': 'unload'})
+
+		del self.modules, self.commands, self.modifiers, self.aliases
+		self.modules, self.commands, self.modifiers, self.aliases = {}, {}, {}, {}
+
+	def loadModules(self):
+		self.modules = self.loadModules_func(self._persVars)
+		for module in self.modules:
+			self.modules[module]['instance'].bot = self
+
+		self.registerCommands()
+		pushEvent(self.modules, {'name': 'loadComplete'})
+
+	def reloadModules(self):
+		self.unloadModules()
+		self.loadModules()
+
+	def registerCommands(self):
+		del self.commands, self.modifiers, self.aliases
+		self.commands, self.modifiers, self.aliases  = {}, {}, {}
 
 		for instance in self.modules:
 			if self.modules[instance]['enabled']:
@@ -231,33 +257,37 @@ class Bot(object):
 			args += word + ' '
 		args = args[:-1]
 
+		
 		for cmd in self.commands:
 			try:
-				doc = self.commands[cmd]['func'].__doc__.split('|')
-				assert(isinstance(eval(doc[1]), dict))
-			except:
-				doc = ['', "{'public': True, 'admin_only': False}", '']
+				try:
+					doc = self.commands[cmd]['func'].__doc__.split('|')
+					assert(isinstance(eval(doc[1]), dict))
+				except:
+					doc = ['', "{'public': True, 'admin_only': False}", '']
 
-			if eval(doc[1])['admin_only'] and usr.host != self.admin.host:
-				continue
+				if eval(doc[1])['admin_only'] and usr.host != self.admin.host:
+					continue
 
-			if self.commands[cmd]['module']['enabled']:
-				if self.cmd_type == 0:
-					if split[0].lower() == self.cmd_char + cmd.lower():
-						self.commands[cmd]['func'](args, rcv, usr)
-				elif self.cmd_type == 1:
-					if split[0].lower() == cmd.lower() + self.cmd_char:
-						self.commands[cmd]['func'](args, rcv, usr)
-
-		for alias in self.aliases:
-			if self.aliases[alias]['module']['enabled']:
-				if self.commands.get(self.aliases[alias]['target']) != None:
+				if self.commands[cmd]['module']['enabled']:
 					if self.cmd_type == 0:
-						if split[0].lower() == self.cmd_char + alias.lower():
-							self.commands[self.aliases[alias]['target']]['func'](args, rcv, usr)
+						if split[0].lower() == self.cmd_char + cmd.lower():
+							self.commands[cmd]['func'](args, rcv, usr)
 					elif self.cmd_type == 1:
-						if split[0].lower() == alias.lower() + self.cmd_char:
-							self.commands[self.aliases[alias]['target']]['func'](args, rcv, usr)
+						if split[0].lower() == cmd.lower() + self.cmd_char:
+							self.commands[cmd]['func'](args, rcv, usr)
+
+				for alias in self.aliases:
+					if self.aliases[alias]['module']['enabled']:
+						if self.commands.get(self.aliases[alias]['target']) != None:
+							if self.cmd_type == 0:
+								if split[0].lower() == self.cmd_char + alias.lower():
+									self.commands[self.aliases[alias]['target']]['func'](args, rcv, usr)
+							elif self.cmd_type == 1:
+								if split[0].lower() == alias.lower() + self.cmd_char:
+									self.commands[self.aliases[alias]['target']]['func'](args, rcv, usr)
+			except KeyError: #necessary because when we unload modules it may bitch about not finding them
+				pass
 
 
 	def irc_onInvite(self, nick, host, channel):
