@@ -219,7 +219,7 @@ class Bot(object):
 		self.sock.close()
 
 		pushEvent(self.modules, {'name': 'quit', 'reason': reason})
-	def chnick(newnick):
+	def chnick(self, newnick):
 		for mod in self.modifiers:
 			if self.modifiers[mod]['module']['enabled']:
 				res = self.modifiers[mod]['func']({'name': 'nick', 'newnick': newnick})
