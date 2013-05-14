@@ -156,6 +156,7 @@ class BotModule(object):
 		except Exception, e:
 			out = chr(3) + '5Error! ' + chr(15) + str(e)
 
+		if out == 'None': out = ''
 		if receiver.ischannel:
 			receiver.msg(out)
 		else: sender.msg(out)
