@@ -12,7 +12,7 @@ class BotModule(object):
 		self.admins = {}
 		self.bot = None
 	def register(self):
-		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}, {'chnick': self.chnick}, {'join': self.join}, {'part': self.part}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
+		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}, {'chnick': self.chnick}, {'join': self.join}, {'part': self.part}, {'mode': self.mode}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
 	def event(self, ev):
 		pass
 	def cmd_help(self, args, receiver, sender):
@@ -62,6 +62,14 @@ class BotModule(object):
 
 		receiver.msg('Parting ' + args.split(' ')[0])
 		self.bot.part(args.split(' ')[0])
+
+	def mode(self, args, receiver, sender):
+		"""mode [channel/user] [modes] [extra] | {'public': False, 'admin_only': True} | sets mode """
+		if args == '':
+			receiver.msg('Arguments: [channel/user] [modes] [extra]')
+			return
+
+		self.bot.mode(args)
 
 
 	def modules(self, args, receiver, sender):
