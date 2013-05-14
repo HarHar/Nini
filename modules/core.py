@@ -12,7 +12,7 @@ class BotModule(object):
 		self.admins = {}
 		self.bot = None
 	def register(self):
-		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}, {'chnick': self.chnick}, {'join': self.join}, {'part': self.part}, {'mode': self.mode}, {'kick': self.kick}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
+		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}, {'chnick': self.chnick}, {'join': self.join}, {'part': self.part}, {'mode': self.mode}, {'kick': self.kick}, {'msg': self.msg}, {'notice': self.notice}, {'say': self.say}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
 	def event(self, ev):
 		pass
 	def cmd_help(self, args, receiver, sender):
@@ -84,6 +84,32 @@ class BotModule(object):
 		x = x[:-1]
 		self.bot.kick(s[0], s[1], x)
 
+	def msg(self, args, receiver, sender):
+		"""msg [nick/channel] [message] | {'public': False, 'admin_only': True} | sends a user/channel a message """
+		s = args.split(' ')
+		if len(s) < 2:
+			receiver.msg('Arguments: [nick/channel] [message]')
+			return
+
+		x = ''
+		for y in s[1:]:
+			x += y + ' '
+		x = x[:-1]
+		self.bot.msg(s[0], x)
+
+	def notice(self, args, receiver, sender):
+		"""msg [nick/channel] [message] | {'public': False, 'admin_only': True} | sends a user/channel a message """
+		s = args.split(' ')
+		if len(s) < 2:
+			receiver.msg('Arguments: [nick/channel] [message]')
+			return
+
+		x = ''
+		for y in s[1:]:
+			x += y + ' '
+		x = x[:-1]
+		self.bot.notice(s[0], x)
+
 	def modules(self, args, receiver, sender):
 		"""modules [unload/reload] | {'public': False, 'admin_only': True} | controls modules """
 		s = args.lower().split()
@@ -107,6 +133,16 @@ class BotModule(object):
 			receiver.msg('If you wish to load all modules you should go to the admin interface and type "/msg $eval bot.loadModules()"')
 		else:
 			receiver.msg('Arguments: [unload/reload]')
+
+	def say(self, args, receiver, sender):
+		"""say [text] | {'public': False, 'admin_only': True} | sends the current channel a message """
+		if args == '':
+			receiver.msg('Arguments: [text]')
+			return
+
+		if receiver.ischannel:
+			receiver.msg(args)
+		else: sender.msg(args)
 
 	def http(self, path, handler):
 		p = path.split('/')
