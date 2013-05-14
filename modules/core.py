@@ -12,7 +12,7 @@ class BotModule(object):
 		self.admins = {}
 		self.bot = None
 	def register(self):
-		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}, {'chnick': self.chnick}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
+		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}, {'chnick': self.chnick}, {'join': self.join}, {'part': self.part}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
 	def event(self, ev):
 		pass
 	def cmd_help(self, args, receiver, sender):
@@ -33,6 +33,36 @@ class BotModule(object):
 		"""quit | {'public': False, 'admin_only': True} | quits bot """
 		self.bot.msg(receiver.name, "Exiting on user command")
 		self.bot.quit()
+
+	def chnick(self, args, receiver, sender):
+		"""chnick [new nick] | {'public': False, 'admin_only': True} | changes nick """
+		if args == '':
+			receiver.msg('Arguments: [new nick]')
+			return
+
+		receiver.msg('Trying to change nick..')
+		self.bot.chnick(args)
+
+
+	def join(self, args, receiver, sender):
+		"""join #[channel] | {'public': False, 'admin_only': True} | joins channel """
+		if args == '':
+			receiver.msg('Arguments: #[channel]')
+			return
+
+		receiver.msg('Joining ' + args.split(' ')[0])
+		self.bot.join(args.split(' ')[0])
+
+
+	def part(self, args, receiver, sender):
+		"""part #[channel] | {'public': False, 'admin_only': True} | parts channel """
+		if args == '':
+			receiver.msg('Arguments: #[channel]')
+			return
+
+		receiver.msg('Parting ' + args.split(' ')[0])
+		self.bot.part(args.split(' ')[0])
+
 
 	def modules(self, args, receiver, sender):
 		"""modules [unload/reload] | {'public': False, 'admin_only': True} | controls modules """
@@ -57,15 +87,6 @@ class BotModule(object):
 			receiver.msg('If you wish to load all modules you should go to the admin interface and type "/msg $eval bot.loadModules()"')
 		else:
 			receiver.msg('Arguments: [unload/reload]')
-
-	def chnick(self, args, receiver, sender):
-		"""chnick [new nick] | {'public': False, 'admin_only': True} | changes nick """
-		if args == '':
-			receiver.msg('Arguments: [new nick]')
-			return
-
-		receiver.msg('Trying to change nick..')
-		self.bot.chnick(args)
 
 	def http(self, path, handler):
 		p = path.split('/')
