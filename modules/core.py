@@ -12,7 +12,7 @@ class BotModule(object):
 		self.admins = {}
 		self.bot = None
 	def register(self):
-		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
+		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}, {'chnick': self.chnick}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
 	def event(self, ev):
 		pass
 	def cmd_help(self, args, receiver, sender):
@@ -46,13 +46,26 @@ class BotModule(object):
 			receiver.msg('Done')
 		elif s[0] == 'reload':
 			receiver.msg('Reloading modules...')
-			self.bot.reloadModules()
+			try:
+				self.bot.reloadModules()
+			except Exception, e:
+				receiver.msg(chr(3) + '5Error!'+ chr(15) + ' ' + str(e))
+				return
 			receiver.msg('Done')
 		elif s[0] == 'load':
 			receiver.msg('This command is not implemented since it wouldn\'t be possible for it to be usable')
 			receiver.msg('If you wish to load all modules you should go to the admin interface and type "/msg $eval bot.loadModules()"')
 		else:
 			receiver.msg('Arguments: [unload/reload]')
+
+	def chnick(self, args, receiver, sender):
+		"""chnick [new nick] | {'public': False, 'admin_only': True} | changes nick """
+		if args == '':
+			receiver.msg('Arguments: [new nick]')
+			return
+
+		receiver.msg('Trying to change nick..')
+		self.bot.chnick(args)
 
 	def http(self, path, handler):
 		p = path.split('/')
