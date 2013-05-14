@@ -273,22 +273,26 @@ class Bot(object):
 					if self.cmd_type == 0:
 						if split[0].lower() == self.cmd_char + cmd.lower():
 							self.commands[cmd]['func'](args, rcv, usr)
+
 					elif self.cmd_type == 1:
 						if split[0].lower() == cmd.lower() + self.cmd_char:
 							self.commands[cmd]['func'](args, rcv, usr)
-
-				for alias in self.aliases:
-					if self.aliases[alias]['module']['enabled']:
-						if self.commands.get(self.aliases[alias]['target']) != None:
-							if self.cmd_type == 0:
-								if split[0].lower() == self.cmd_char + alias.lower():
-									self.commands[self.aliases[alias]['target']]['func'](args, rcv, usr)
-							elif self.cmd_type == 1:
-								if split[0].lower() == alias.lower() + self.cmd_char:
-									self.commands[self.aliases[alias]['target']]['func'](args, rcv, usr)
 			except KeyError: #necessary because when we unload modules it may bitch about not finding them
-				pass
+				break
 
+
+		
+		for alias in self.aliases:
+			try:
+				if self.aliases[alias]['module']['enabled']:
+					if self.commands.get(self.aliases[alias]['target']) != None:
+						if self.cmd_type == 0:
+							if split[0].lower() == self.cmd_char + alias.lower():									self.commands[self.aliases[alias]['target']]['func'](args, rcv, usr)
+						elif self.cmd_type == 1:
+							if split[0].lower() == alias.lower() + self.cmd_char:
+								self.commands[self.aliases[alias]['target']]['func'](args, rcv, usr)
+			except KeyError: 
+					break
 
 	def irc_onInvite(self, nick, host, channel):
 		if nick in self.ignores:
