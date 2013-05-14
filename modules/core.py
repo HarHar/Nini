@@ -12,7 +12,7 @@ class BotModule(object):
 		self.admins = {}
 		self.bot = None
 	def register(self):
-		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}, {'chnick': self.chnick}, {'join': self.join}, {'part': self.part}, {'mode': self.mode}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
+		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}, {'chnick': self.chnick}, {'join': self.join}, {'part': self.part}, {'mode': self.mode}, {'kick': self.kick}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
 	def event(self, ev):
 		pass
 	def cmd_help(self, args, receiver, sender):
@@ -71,6 +71,18 @@ class BotModule(object):
 
 		self.bot.mode(args)
 
+	def kick(self, args, receiver, sender):
+		"""kick [channel] [nick] [reason] | {'public': False, 'admin_only': True} | kicks a user from a channel """
+		s = args.split(' ')
+		if len(s) < 3:
+			receiver.msg('Arguments: [channel] [nick] [reason]')
+			return
+
+		x = ''
+		for y in s[2:]:
+			x += y + ' '
+		x = x[:-1]
+		self.bot.kick(s[0], s[1], x)
 
 	def modules(self, args, receiver, sender):
 		"""modules [unload/reload] | {'public': False, 'admin_only': True} | controls modules """
