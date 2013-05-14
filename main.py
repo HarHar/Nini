@@ -15,6 +15,8 @@ import core.engine_botserver
 import core.engine_admin
 import core.engine_web
 
+import SocketServer
+
 def massload(folder):
 	modls = {}
 	from os.path import join
@@ -111,7 +113,8 @@ adm.nick = config['admin_nick']
 adm.host = config['admin_host']
 bot = core.engine_bot.Bot(server=config['server'], serverPassword=config['serverPassword'], port=config['port'], nick=config['nick'], nickservPass=config['nickservPass'], channel=config['channel'], adminPassword=config['adminPassword'], modules=modInstances, cmd_type=config['cmd_type'], cmd_char=config['cmd_char'], admin=adm, loadModules_func=loadModsWrapper, persVars=persistentVariables) #We need to go wider
 
-srv = threading.Thread(target=core.engine_botserver.start, args=(bot, modInstances))
+srv_ss = SocketServer.ThreadingTCPServer(('127.0.0.1', 60981), core.engine_botserver.botServer)
+srv = threading.Thread(target=core.engine_botserver.start, args=(bot, modInstances, srv_ss))
 srv.setDaemon(True)
 srv.start()
 
@@ -129,4 +132,5 @@ while True:
 	try:
 		sleep(420)#blazeitfgt
 	except:
+		srv_ss.shutdown()
 		os.kill(os.getpid(), 9) #seppuku

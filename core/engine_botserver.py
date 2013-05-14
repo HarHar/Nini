@@ -47,12 +47,11 @@ class botServer(SocketServer.BaseRequestHandler):
 		global connections
 		connections[self.request] = False
 
-def start(botInstance, modules):
+def start(botInstance, modules, server):
 	print '[\033[94minfo\033[0m] Listening on 60981 for stand-alone plugins'
 	global moduleInstances
 	moduleInstances = modules
 	global bot
 	bot = botInstance
-	server = SocketServer.ThreadingTCPServer(('127.0.0.1', 60981), botServer)
 	server.allow_reuse_address = True
 	server.serve_forever()
