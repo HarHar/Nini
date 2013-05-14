@@ -271,9 +271,7 @@ class Bot(object):
 
 				if self.commands[cmd]['module']['enabled']:
 					if self.cmd_type == 0:
-						if split[0].lower() == self.cmd_char + cmd.lower():
-							self.commands[cmd]['func'](args, rcv, usr)
-
+						if split[0].lower() == self.cmd_char + cmd.lower():							self.commands[cmd]['func'](args, rcv, usr)
 					elif self.cmd_type == 1:
 						if split[0].lower() == cmd.lower() + self.cmd_char:
 							self.commands[cmd]['func'](args, rcv, usr)
