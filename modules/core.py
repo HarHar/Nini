@@ -12,7 +12,7 @@ class BotModule(object):
 		self.admins = {}
 		self.bot = None
 	def register(self):
-		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}, {'chnick': self.chnick}, {'join': self.join}, {'part': self.part}, {'mode': self.mode}, {'kick': self.kick}, {'msg': self.msg}, {'notice': self.notice}, {'say': self.say}, {'eval': self.eval}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
+		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}, {'chnick': self.chnick}, {'join': self.join}, {'part': self.part}, {'mode': self.mode}, {'kick': self.kick}, {'msg': self.msg}, {'notice': self.notice}, {'say': self.say}, {'eval': self.eval}, {'whoami': self.whoami}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
 	def event(self, ev):
 		pass
 	def cmd_help(self, args, receiver, sender):
@@ -160,6 +160,10 @@ class BotModule(object):
 		if receiver.ischannel:
 			receiver.msg(out)
 		else: sender.msg(out)
+
+	def whoami(self, args, receiver, sender):
+		"""whoami | {'public': False, 'admin_only': False} | says your nick """
+		receiver.msg('You sent that message as ' + sender.nick)
 
 	def http(self, path, handler):
 		p = path.split('/')
