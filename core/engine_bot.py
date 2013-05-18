@@ -259,9 +259,9 @@ class Bot(object):
 		args = ''
 		for word in split[1:]:
 			args += word + ' '
-			args = args[:-1]
+		args = args[:-1]
 
-	
+
 		for cmd in self.commands:
 			try:
 				try:
@@ -297,28 +297,27 @@ class Bot(object):
 									usr.msg(chr(3) + '5Oops!' + chr(15) + ' An error has occurred and logged, it will soon be fixed. I apologize')
 
 
-					elif self.cmd_type == 1:
-						if split[0].lower() == cmd.lower() + self.cmd_char:
-							try:
-								self.commands[cmd]['func'](args, rcv, usr)
-							except:
-								print 'Exception on module ' + repr(self.commands[cmd]['module']['instance'].__module__) + ' was logged'
-								tr = traceback.format_exc()
-								#print '\033[91m' + tr + '\033[0m' #uncomment to print out exception
+				elif self.cmd_type == 1:
+					if split[0].lower() == cmd.lower() + self.cmd_char:
+						try:
+							self.commands[cmd]['func'](args, rcv, usr)
+						except:
+							print 'Exception on module ' + repr(self.commands[cmd]['module']['instance'].__module__) + ' was logged'
+							tr = traceback.format_exc()
+							#print '\033[91m' + tr + '\033[0m' #uncomment to print out exception
 
-								pv = self._persVars['errors']
-								if pv.get(self.commands[cmd]['module']['instance'].__module__) == None:
-									pv[self.commands[cmd]['module']['instance'].__module__] = []
+							pv = self._persVars['errors']
+							if pv.get(self.commands[cmd]['module']['instance'].__module__) == None:
+								pv[self.commands[cmd]['module']['instance'].__module__] = []
 
-								pv[self.commands[cmd]['module']['instance'].__module__].append(tr)
-								self._persVars['errors'] = pv
+							pv[self.commands[cmd]['module']['instance'].__module__].append(tr)
+							self._persVars['errors'] = pv
 
-								##Warn who issued the command
-								if rcv.ischannel:
-									rcv.msg(chr(3) + '5Oops!' + chr(15) + ' An error has occurred and logged, it will soon be fixed. I apologize')
-								else:
-									usr.msg(chr(3) + '5Oops!' + chr(15) + ' An error has occurred and logged, it will soon be fixed. I apologize')
-
+							##Warn who issued the command
+							if rcv.ischannel:
+								rcv.msg(chr(3) + '5Oops!' + chr(15) + ' An error has occurred and logged, it will soon be fixed. I apologize')
+							else:
+								usr.msg(chr(3) + '5Oops!' + chr(15) + ' An error has occurred and logged, it will soon be fixed. I apologize')
 
 			except KeyError: #necessary because when we unload modules it may bitch about not finding them
 				break
