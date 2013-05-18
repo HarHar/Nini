@@ -285,7 +285,7 @@ class Bot(object):
 									pv[self.commands[cmd]['module']['instance'].__module__] = []
 
 								pv[self.commands[cmd]['module']['instance'].__module__].append(tr)
-								self._persVars = pv
+								self._persVars['errors'] = pv
 
 
 					elif self.cmd_type == 1:
@@ -302,7 +302,7 @@ class Bot(object):
 									pv[self.commands[cmd]['module']['instance'].__module__] = []
 
 								pv[self.commands[cmd]['module']['instance'].__module__].append(tr)
-								self._persVars = pv
+								self._persVars['errors'] = pv
 
 			except KeyError: #necessary because when we unload modules it may bitch about not finding them
 				break
