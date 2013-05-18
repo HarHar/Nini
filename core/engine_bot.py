@@ -276,7 +276,7 @@ class Bot(object):
 							try:
 								self.commands[cmd]['func'](args, rcv, usr)
 							except:
-								print 'Exception on module ' + repr(self.commands[cmd]['module']['instance'].__module__) + ' was logged'
+								print '\033[91m' + 'Exception on module ' + repr(self.commands[cmd]['module']['instance'].__module__) + ' was logged' + '\033[0m'
 								tr = traceback.format_exc()
 								#print '\033[91m' + tr + '\033[0m' #uncomment to print out exception
 
