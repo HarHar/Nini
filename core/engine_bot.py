@@ -5,6 +5,7 @@ import sys
 import os
 import socket
 import threading
+import traceback
 from time import sleep
 
 def pushEvent(modules, event):
@@ -255,9 +256,9 @@ class Bot(object):
 		args = ''
 		for word in split[1:]:
 			args += word + ' '
-		args = args[:-1]
+			args = args[:-1]
 
-		
+	
 		for cmd in self.commands:
 			try:
 				try:
@@ -272,10 +273,37 @@ class Bot(object):
 				if self.commands[cmd]['module']['enabled']:
 					if self.cmd_type == 0:
 						if split[0].lower() == self.cmd_char + cmd.lower():
-							self.commands[cmd]['func'](args, rcv, usr)
+							try:
+								self.commands[cmd]['func'](args, rcv, usr)
+							except:
+								print 'Exception on module ' + repr(self.commands[cmd]['module']['instance'].__module__) + ' was logged'
+								tr = traceback.format_exc()
+								#print '\033[91m' + tr + '\033[0m' #uncomment to print out exception
+
+								pv = self._persVars['errors']
+								if pv.get(self.commands[cmd]['module']['instance'].__module__) == None:
+									pv[self.commands[cmd]['module']['instance'].__module__] = []
+
+								pv[self.commands[cmd]['module']['instance'].__module__].append(tr)
+								self._persVars = pv
+
+
 					elif self.cmd_type == 1:
 						if split[0].lower() == cmd.lower() + self.cmd_char:
-							self.commands[cmd]['func'](args, rcv, usr)
+							try:
+								self.commands[cmd]['func'](args, rcv, usr)
+							except:
+								print 'Exception on module ' + repr(self.commands[cmd]['module']['instance'].__module__) + ' was logged'
+								tr = traceback.format_exc()
+								#print '\033[91m' + tr + '\033[0m' #uncomment to print out exception
+
+								pv = self._persVars['errors']
+								if pv.get(self.commands[cmd]['module']['instance'].__module__) == None:
+									pv[self.commands[cmd]['module']['instance'].__module__] = []
+
+								pv[self.commands[cmd]['module']['instance'].__module__].append(tr)
+								self._persVars = pv
+
 			except KeyError: #necessary because when we unload modules it may bitch about not finding them
 				break
 
