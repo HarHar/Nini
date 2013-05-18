@@ -287,6 +287,12 @@ class Bot(object):
 								pv[self.commands[cmd]['module']['instance'].__module__].append(tr)
 								self._persVars['errors'] = pv
 
+								##Warn who issued the command
+								if rcv.ischannel:
+									rcv.msg(chr(3) + '5Oops!' + chr(15) + ' An error has occurred and logged, it will soon be fixed. I apologize')
+								else:
+									usr.msg(chr(3) + '5Oops!' + chr(15) + ' An error has occurred and logged, it will soon be fixed. I apologize')
+
 
 					elif self.cmd_type == 1:
 						if split[0].lower() == cmd.lower() + self.cmd_char:
@@ -303,6 +309,13 @@ class Bot(object):
 
 								pv[self.commands[cmd]['module']['instance'].__module__].append(tr)
 								self._persVars['errors'] = pv
+
+								##Warn who issued the command
+								if rcv.ischannel:
+									rcv.msg(chr(3) + '5Oops!' + chr(15) + ' An error has occurred and logged, it will soon be fixed. I apologize')
+								else:
+									usr.msg(chr(3) + '5Oops!' + chr(15) + ' An error has occurred and logged, it will soon be fixed. I apologize')
+
 
 			except KeyError: #necessary because when we unload modules it may bitch about not finding them
 				break
