@@ -3,10 +3,16 @@
 from urllib2 import urlopen
 from urllib import quote
 from xml.dom import minidom
-import libtorrent as lt
 from byteformat import format as fmt
 from time import sleep
 import os, inspect
+
+try:
+    import libtorrent as lt
+except ImportError:
+    haslibtorrent = False
+else:
+    haslibtorrent = True
 
 def fuzzyTail():
     pass
@@ -14,6 +20,9 @@ def fuzzyTail():
 class BotModule(object):
     """ Searches torrents on nyaa.eu """
     def __init__(self, storage):
+        global haslibtorrent #ew
+        self.detailsEnabled = haslibtorrent
+
         self.storage = storage
         self.admins = {}
         self.bot = None
@@ -29,7 +38,7 @@ class BotModule(object):
         if args == self.bot.cmd_char + "next":
             self.resultNum = self.resultNum + 1
             result = self.results[self.resultNum]
-        elif args in [self.bot.cmd_char + "details", self.bot.cmd_char + "detail"]:
+        elif args in [self.bot.cmd_char + "details", self.bot.cmd_char + "detail"] and self.detailsEnabled:
             if isinstance(self.resultNum, str) == False and self.results != []:
                 entry = self.results[self.resultNum]
                 e = lt.bdecode(urlopen(entry['url']).read())
@@ -85,7 +94,10 @@ class BotModule(object):
         details = details.replace('Trusted', chr(15) + chr(3) + '03Trusted' + chr(15))
         self.bot.msg(receiver.name, chr(3) + '13[' + category + '] ' + chr(15) + title + ' [' + chr(3) + '14' + details + ']' + chr(15) + ' - ' + chr(2) +  url)
         if self.resultNum == 0:
-            self.bot.msg(receiver.name, "For details use '" + chr(3) + '03' + self.bot.cmd_char + "nyaa " + self.bot.cmd_char + "details" + chr(15) + "', for the next result use '" + chr(3) + '03' + self.bot.cmd_char + "nyaa " + self.bot.cmd_char + "next" + chr(15) + "'")
+            if self.detailsEnabled:
+                self.bot.msg(receiver.name, "For details use '" + chr(3) + '03' + self.bot.cmd_char + "nyaa " + self.bot.cmd_char + "details" + chr(15) + "', for the next result use '" + chr(3) + '03' + self.bot.cmd_char + "nyaa " + self.bot.cmd_char + "next" + chr(15) + "'")
+            else:
+                self.bot.msg(receiver.name, "For the next result use '" + chr(3) + '03' + self.bot.cmd_char + "nyaa " + self.bot.cmd_char + "next" + chr(15) + "'")
 	
     def search(self, term):
         results = []
