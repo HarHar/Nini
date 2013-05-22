@@ -19,7 +19,7 @@ class BotModule(object):
 	#Registered command
 	##############
 	def cmd_test2(self, args, receiver, sender):
-		"""test2 | True | Ping-pong"""
+		"""test2 | {'public': True, 'admin_only': False} | Ping-pong"""
 		self.bot.msg(receiver.name, 'This works too \\^ \\^')
 
 	##############
