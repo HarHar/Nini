@@ -16,7 +16,7 @@ def pushEvent(modules, event):
 			except AttributeError:
 				continue
 			except:
-				print 'Exception on module ' + repr(self.commands[cmd]['module']['instance'].__module__) + ' it was \033[91mnot\033[0m logged'
+				print 'Exception on module ' + repr(modules[module]['instance'].__module__) + ' it was \033[91mnot\033[0m logged'
 				print traceback.format_exc()
 
 class user():
