@@ -28,7 +28,7 @@ class BotModule(object):
         return {'functions': [{'urbandictionary': self.cmd_ud}], 'aliases': {'ud': 'urbandictionary', 'urb': 'urbandictionary', 'urbandict': 'urbandictionary'}}
 
     def cmd_ud(self, args, receiver, sender):
-        """ud [entry] | {'public': True, 'admin_only': False} | Fetches an entry on Urban Dictionary"""
+        """ud [entry] | {'public': True, 'admin_only': False} | Fetches an entry from Urban Dictionary"""
         if args.replace(' ', '') == '': return receiver.msg('Arguments: [text] ')
 
         found = False
