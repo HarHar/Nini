@@ -345,6 +345,21 @@ class Bot(object):
 		usr.host = host
 		pushEvent(self.modules, {'name': 'invite', 'from': usr, 'channel': channel})
 
+	def irc_onJoin(self, nick, _user, addr, channel):
+		if nick in self.ignores:
+			if self.ignores[nick] == '*': return
+			if self.ignores[nick] == channel: return
+		usr = user()
+		usr.nick = nick
+		usr.host = _user + '@' + addr
+		chan = receiver()
+		chan.name = channel
+		chan.ischannel = True
+		chan.bot = self
+
+		pushEvent(self.modules, {'name': 'join', 'who': usr, 'channel': chan})
+
+
 def handlingThread(sock, bot):
 	while bot.active:
 		rcvd = sock.recv(4096)
@@ -374,6 +389,10 @@ def handlingThread(sock, bot):
 						bot.onWelcome()
 					elif csplit[1].lower() == 'invite':
 						bot.irc_onInvite(lsplit[1].split('!')[0].strip('\r').strip('\n'), lsplit[1].split('!')[1].strip('\r').strip('\n'), lsplit[2])
+
+				if lsplit[1].find('JOIN') != -1:
+					bot.irc_onJoin(lsplit[1].split('!')[0].strip('\r').strip('\n'), lsplit[1].split('!')[1].split(' ')[0].split('@')[0], lsplit[1].split('!')[1].split(' ')[0].split('@')[1], lsplit[2].strip('\r').strip('\n'))
+
 				if 'PRIVMSG' in lsplit[1] or 'NOTICE' in lsplit[1]:
 					# ---BEGIN WTF BLOCK---
 					lsplit = line.split(':')
