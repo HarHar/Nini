@@ -8,7 +8,16 @@ import threading
 import traceback
 from time import sleep
 
-def pushEvent(modules, event):
+def threadize(func, args):
+	t = threading.Thread(target=func, args=args)
+	t.setDaemon(True)
+	t.start()
+
+def pushEvent(modules, event, threaded=False):
+	if not threaded:
+		threadize(pushEvent, (modules, event, True))
+		return
+
 	for module in modules:
 		if modules[module]['enabled']:
 			try:
@@ -277,7 +286,7 @@ class Bot(object):
 					if self.cmd_type == 0:
 						if split[0].lower() == self.cmd_char + cmd.lower():
 							try:
-								self.commands[cmd]['func'](args, rcv, usr)
+								threadize(self.commands[cmd]['func'], (args, rcv, usr))
 							except:
 								print '\033[91m' + 'Exception on module ' + repr(self.commands[cmd]['module']['instance'].__module__) + ' was logged' + '\033[0m'
 								tr = traceback.format_exc()
@@ -300,7 +309,7 @@ class Bot(object):
 				elif self.cmd_type == 1:
 					if split[0].lower() == cmd.lower() + self.cmd_char:
 						try:
-							self.commands[cmd]['func'](args, rcv, usr)
+							threadize(self.commands[cmd]['func'], (args, rcv, usr))
 						except:
 							print 'Exception on module ' + repr(self.commands[cmd]['module']['instance'].__module__) + ' was logged'
 							tr = traceback.format_exc()
@@ -332,7 +341,7 @@ class Bot(object):
 							if split[0].lower() == self.cmd_char + alias.lower():									self.commands[self.aliases[alias]['target']]['func'](args, rcv, usr)
 						elif self.cmd_type == 1:
 							if split[0].lower() == alias.lower() + self.cmd_char:
-								self.commands[self.aliases[alias]['target']]['func'](args, rcv, usr)
+								threadize(self.commands[self.aliases[alias]['target']]['func'], (args, rcv, usr))
 			except KeyError: 
 					break
 
