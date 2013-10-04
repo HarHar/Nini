@@ -180,6 +180,28 @@ class Bot(object):
 
 		pushEvent(self.modules, {'name': 'selfnotice', 'who': who, 'message': message})
 		sleep(1)
+	def topic(self, channel, message):
+		for mod in self.modifiers:
+			if self.modifiers[mod]['module']['enabled']:
+				res = self.modifiers[mod]['func']({'name': 'topic', 'channel': channel, 'topic': message})
+				channel = res['channel']
+				message = res['topic']
+				if res.get('block') != None: return
+
+		self.sockSend('TOPIC ' + channel + ' :' + message)
+
+		pushEvent(self.modules, {'name': 'selftopic', 'channel': channel, 'topic': message})
+	def topic(self, channel, message):
+		for mod in self.modifiers:
+			if self.modifiers[mod]['module']['enabled']:
+				res = self.modifiers[mod]['func']({'name': 'topic', 'channel': channel, 'topic': message})
+				channel = res['channel']
+				message = res['topic']
+				if res.get('block') != None: return
+
+		self.sockSend('TOPIC ' + channel + ' :' + message)
+
+		pushEvent(self.modules, {'name': 'selftopic', 'channel': channel, 'topic': message})
 	def join(self, channel, passw=''):
 		for mod in self.modifiers:
 			if self.modifiers[mod]['module']['enabled']:
@@ -393,30 +415,33 @@ def handlingThread(sock, bot):
 				csplit = []
 			#print repr(csplit) + ' - ' + repr(lsplit) +# ' - ' + repr(line)
 			if len(lsplit) >= 2:
-				if len(csplit) >= 2:
-					if csplit[1] == '001':
-						bot.onWelcome()
-					elif csplit[1].lower() == 'invite':
-						bot.irc_onInvite(lsplit[1].split('!')[0].strip('\r').strip('\n'), lsplit[1].split('!')[1].strip('\r').strip('\n'), lsplit[2])
+				try:
+					if len(csplit) >= 2:
+						if csplit[1] == '001':
+							bot.onWelcome()
+						elif csplit[1].lower() == 'invite':
+							bot.irc_onInvite(lsplit[1].split('!')[0].strip('\r').strip('\n'), lsplit[1].split('!')[1].strip('\r').strip('\n'), lsplit[2])
 
-				if lsplit[1].find('JOIN') != -1:
-					bot.irc_onJoin(lsplit[1].split('!')[0].strip('\r').strip('\n'), lsplit[1].split('!')[1].split(' ')[0].split('@')[0], lsplit[1].split('!')[1].split(' ')[0].split('@')[1], lsplit[2].strip('\r').strip('\n'))
+					if lsplit[1].find('JOIN') != -1:
+						bot.irc_onJoin(lsplit[1].split('!')[0].strip('\r').strip('\n'), lsplit[1].split('!')[1].split(' ')[0].split('@')[0], lsplit[1].split('!')[1].split(' ')[0].split('@')[1], lsplit[2].strip('\r').strip('\n'))
 
-				if 'PRIVMSG' in lsplit[1] or 'NOTICE' in lsplit[1]:
-					# ---BEGIN WTF BLOCK---
-					lsplit = line.split(':')
-					addrnfrom = ''
-					if '~' in lsplit[1]:
-						addrnfrom = lsplit[1].split('~')[1].split(' ')[0]
-						nfrom = lsplit[1].split('!')[0]
-					else:
-						nfrom = lsplit[1].split('!')[0]
+					if 'PRIVMSG' in lsplit[1] or 'NOTICE' in lsplit[1]:
+						# ---BEGIN WTF BLOCK---
+						lsplit = line.split(':')
+						addrnfrom = ''
+						if '~' in lsplit[1]:
+							addrnfrom = lsplit[1].split('~')[1].split(' ')[0]
+							nfrom = lsplit[1].split('!')[0]
+						else:
+							nfrom = lsplit[1].split('!')[0]
 
-					if len(lsplit[1].split()) >= 3:
-						to = lsplit[1].split()[2]
-					msg = ''
-					for brks in lsplit[2:]:
-						msg += brks + ':'
-					msg = msg[:-1].lstrip()
-					# ---END WTF BLOCK- --
-					bot.irc_onMsg(nfrom, addrnfrom, to, msg)
+						if len(lsplit[1].split()) >= 3:
+							to = lsplit[1].split()[2]
+						msg = ''
+						for brks in lsplit[2:]:
+							msg += brks + ':'
+						msg = msg[:-1].lstrip()
+						# ---END WTF BLOCK- --
+						bot.irc_onMsg(nfrom, addrnfrom, to, msg)
+				except:
+					print 'Unhandled core error'

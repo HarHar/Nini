@@ -12,9 +12,17 @@ class BotModule(object):
 		self.admins = {}
 		self.bot = None
 	def register(self):
-		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}, {'chnick': self.chnick}, {'join': self.join}, {'part': self.part}, {'mode': self.mode}, {'kick': self.kick}, {'msg': self.msg}, {'notice': self.notice}, {'say': self.say}, {'eval': self.eval}, {'whoami': self.whoami}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
+		return {'functions': [{'help': self.cmd_help}, {'quit': self.quit}, {'modules': self.modules}, {'chnick': self.chnick}, {'join': self.join}, {'part': self.part}, {'mode': self.mode}, {'kick': self.kick}, {'msg': self.msg}, {'notice': self.notice}, {'say': self.say}, {'eval': self.eval}, {'whoami': self.whoami}, {'exception': self.exception}], 'aliases': {'commands': 'help', 'cmds': 'help'}}
 	def event(self, ev):
-		pass
+		if ev['name'] == 'msg':
+			if (ev['msg'].find(chr(1) + 'ACTION') == 0) and (ev['msg'].find(self.bot.nick) != -1):
+				if ev['msg'].lower().find('harhar') != -1:
+					ev['to'].msg(ev['msg'].replace('HarHar', ev['from'].nick).replace(self.bot.nick, 'HarHar'))
+					return
+				elif ev['msg'].lower().find('misaka') != -1:
+					ev['to'].msg(ev['msg'].replace('Misaka', ev['from'].nick).replace(self.bot.nick, 'Misaka'))
+					return
+				ev['to'].msg(ev['msg'].replace(self.bot.nick, ev['from'].nick))
 	def cmd_help(self, args, receiver, sender):
 		"""help | {'public': True, 'admin_only': False} | shows where to get a list of commands"""
 		baseURL = ''
@@ -33,6 +41,10 @@ class BotModule(object):
 		"""quit | {'public': False, 'admin_only': True} | quits bot """
 		self.bot.msg(receiver.name, "Exiting on user command")
 		self.bot.quit()
+
+	def exception(self, args, receiver, sender):
+		"""exception | {'public': False, 'admin_only': True} | raises an exception for testing purposes """
+		int(args + '.')
 
 	def chnick(self, args, receiver, sender):
 		"""chnick [new nick] | {'public': False, 'admin_only': True} | changes nick """
@@ -172,7 +184,7 @@ class BotModule(object):
 		out = ''
 		if len(p) >= 2:
 			if p[2].lower() == 'commands':
-				for cmd in self.bot.commands:
+				for cmd in sorted(self.bot.commands, key=lambda x: x['module']):
 					try:
 						doc = self.bot.commands[cmd]['func'].__doc__.split('|')
 						if eval(doc[1])['public'] == True:

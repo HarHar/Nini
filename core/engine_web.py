@@ -2,6 +2,7 @@ import tornado.ioloop
 import tornado.web
 import threading
 import os, inspect
+import traceback
 
 def fuzzyTail():
 	pass
@@ -17,9 +18,10 @@ class MainHandler(tornado.web.RequestHandler):
 		self.config = config
 		self.pvar = pvar
 	def get(self, path):
-		#if path == '/Saber':
-		#	self.write(open(os.path.join(self.path, 'web/Saber.jpg'), 'r').read())
-		#	return
+		if path == '/bootstrap.css':
+			self.set_header('Content-Type', 'text/css')
+			self.write(open(os.path.join(self.path, 'web/bootstrap.css'), 'r').read())
+			return
 		if path.endswith('.msct'):
 			p = path[:-5]
 			if os.path.exists(os.path.join(self.path, 'web/'+ p +'.jpg')):
@@ -41,19 +43,23 @@ class MainHandler(tornado.web.RequestHandler):
 						renderWith = self.bot.modules[path[1:].split('/')[0]]['instance'].http(path, self)
 						if renderWith.get('mascot') in ['', None]:
 							renderWith['mascot'] = 'Saber'
-						assert(renderWith.get('title') != None)
 						assert(renderWith.get('content') != None)
 					except Exception, e:
 						renderWith = self.noReturn
-						renderWith['content'] += '<br />' + str(e)
+						renderWith['content'] += '<br /><pre>' + traceback.format_exc() + '</pre>'
 				else:
 					renderWith = self.noExist
 
 			if renderWith.get('max-width') == None: renderWith['max-width'] = '680px'
 
-			rendered = unicode(template).replace('##TITLE##', renderWith['title']).replace('##CONTENT##', renderWith['content']).replace('##BOTNAME##', self.bot.nick).replace('##MAX-WIDTH##', renderWith['max-width'])
-			for key in renderWith:
-				rendered = rendered.replace('##' + key.upper() + '##', renderWith[key])
+			if renderWith.get('type') != None: self.content_type = renderWith['type']
+
+			if renderWith.get('raw') is None:
+				rendered = unicode(template).replace('##TITLE##', renderWith['title']).replace('##CONTENT##', renderWith['content']).replace('##BOTNAME##', self.bot.nick).replace('##MAX-WIDTH##', renderWith['max-width'])
+				for key in renderWith:
+					rendered = rendered.replace('##' + key.upper() + '##', renderWith[key])
+			else:
+				rendered = renderWith['content']
 			self.write(rendered)
 
 def start(port, config, botInstance, pvar):
