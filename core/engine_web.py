@@ -9,9 +9,13 @@ def fuzzyTail():
 
 class MainHandler(tornado.web.RequestHandler):
 	def initialize(self, config, bot, pvar):
-		self.mainPage = {'title': 'Welcome', 'content': 'This is ##BOTNAME##\'s web server, how may I serve you?', 'mascot': 'Saber'}
-		self.noReturn = {'title': 'Oops', 'content': 'This module seems to exist, but did not return a (valid) HTTP response', 'mascot': 'Saber'}
-		self.noExist = {'title': 'Oops', 'content': 'This module does not exists', 'mascot': 'Saber'}
+		if 'mascot' in pvar['config'].getkeys():
+			mascot = pvar['config']['mascot']
+		else:
+			mascot = 'Saber'
+		self.mainPage = {'title': 'Welcome', 'content': 'This is ##BOTNAME##\'s web server, how may I serve you?', 'mascot': mascot}
+		self.noReturn = {'title': 'Oops', 'content': 'This module seems to exist, but did not return a (valid) HTTP response', 'mascot': mascot}
+		self.noExist = {'title': 'Oops', 'content': 'This module does not exists', 'mascot': mascot}
 		self.path = os.path.dirname(os.path.abspath(inspect.getsourcefile(fuzzyTail)))
 
 		self.bot = bot

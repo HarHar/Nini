@@ -72,8 +72,8 @@ if config:
 	newconf['admin_nick'] = raw_input('Your nick> ')
 	newconf['admin_host'] = raw_input('Your ident@host (or VHost)> ')
 
-
-
+	newconf['mascot'] = raw_input('Web mascot [Choose \'Saber\' for the default]> ')
+	
 	t = 'lol'
 	while (t in ['0', '1']) == False: t = raw_input('Command type [0 for prefix; 1 for affix]> ')
 	newconf['cmd_type'] = int(t)
@@ -105,7 +105,6 @@ def loadModsWrapper(persV):
 #modules = massload(os.path.join(directory, 'modules/'))
 
 config = persistentVariables['config']
-
 modInstances = loadModsWrapper(persistentVariables)
 
 adm = core.engine_bot.user()
