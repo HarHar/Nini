@@ -9,7 +9,7 @@ def fuzzyTail():
 
 class MainHandler(tornado.web.RequestHandler):
 	def initialize(self, config, bot, pvar):
-		if 'mascot' in pvar['config'].getkeys():
+		if 'mascot' in pvar['config']:
 			mascot = pvar['config']['mascot']
 		else:
 			mascot = 'Saber'
@@ -21,6 +21,7 @@ class MainHandler(tornado.web.RequestHandler):
 		self.bot = bot
 		self.config = config
 		self.pvar = pvar
+		self.mascot = mascot
 	def get(self, path):
 		if path == '/bootstrap.css':
 			self.set_header('Content-Type', 'text/css')
@@ -46,7 +47,7 @@ class MainHandler(tornado.web.RequestHandler):
 					try:
 						renderWith = self.bot.modules[path[1:].split('/')[0]]['instance'].http(path, self)
 						if renderWith.get('mascot') in ['', None]:
-							renderWith['mascot'] = 'Saber'
+							renderWith['mascot'] = self.mascot
 						assert(renderWith.get('content') != None)
 					except Exception, e:
 						renderWith = self.noReturn

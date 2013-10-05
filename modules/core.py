@@ -178,22 +178,18 @@ class BotModule(object):
 		receiver.msg('You sent that message as ' + sender.nick)
 
 	def http(self, path, handler):
-		p = path.split('/')
-		#p[0] == '', p[1] == 'core', p[2] == 'SOMEPAGE', p[3] == '' <-- example
-
-		out = ''
-		if len(p) >= 2:
-			if p[2].lower() == 'commands':
-				for cmd in sorted(self.bot.commands, key=lambda x: x['module']):
-					try:
-						doc = self.bot.commands[cmd]['func'].__doc__.split('|')
-						if eval(doc[1])['public'] == True:
-							if self.bot.cmd_type == 0:
-								out += '<p><span class="lead">' + self.bot.cmd_char + doc[0].strip() + '</span> '+ doc[2] + '</p>'
-							else:
-								out += '<p><span class="lead">' + doc[0].strip() + self.bot.cmd_char + '</span> '+ doc[2] + '</p>'
-					except:
-						continue
-				return {'title': 'Commands', 'content': out, 'mascot': 'Saber2'}
-			else:
-				return {'title': 'Core', 'content': 'Provides some cool stuff'}
+		out = ""
+		if path == "/core/commands":
+			for cmd in sorted(self.bot.commands):
+				try:
+					doc = self.bot.commands[cmd]['func'].__doc__.split('|')
+					if eval(doc[1])['public'] == True:
+						if self.bot.cmd_type == 0:
+							out += '<p><span class="lead">' + self.bot.cmd_char + doc[0].strip() + '</span> '+ doc[2] + '</p>'
+						else:
+							out += '<p><span class="lead">' + doc[0].strip() + self.bot.cmd_char + '</span> '+ doc[2] + '</p>'
+				except:
+					continue
+			return {'title': 'Commands', 'content': out}
+		else:
+			return {'title': 'Core', 'content': 'Provides some cool stuff, mostly for the bot admin though'}
