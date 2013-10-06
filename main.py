@@ -93,12 +93,14 @@ def loadModsWrapper(persV):
 	for module in modules:
 		try:
 			sys.stdout.write('Loading ' + repr(module) + '... ')
+			sys.stdout.flush()
 			ret[module] = {'instance': modules[module].BotModule(persV), 'enabled': True}
 			sys.stdout.write('[\033[92mdone\033[0m]\n')
 		except AttributeError:
 			sys.stdout.write('[\033[93mwarning\033[0m]\n')
 		except Exception, e:
 			sys.stdout.write('[\033[91merror - (' + str(e) + ')\033[0m]\n')
+		sys.stdout.flush()
 	return ret
 
 #directory = os.path.dirname(os.path.realpath(__file__))
