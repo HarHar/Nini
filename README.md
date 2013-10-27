@@ -26,3 +26,7 @@ An example of module is located on modules/example.py, use it.
 whoami
 ====
 HarHar @ irc.rizon.net
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/HarHar/nini/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
