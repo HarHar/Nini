@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
 import os
+import sys
+import ssl
 import socket
 import threading
 import traceback
@@ -64,11 +65,12 @@ class receiver():
 
 
 class Bot(object):
-	def __init__(self, server='localhost', serverPassword='', port=6667, nick='KB', nickservPass='', channel='', channelPassword='', modules={}, adminPassword='default', cmd_type=0, cmd_char='$', admin=user(), loadModules_func=None, persVars=None):
+	def __init__(self, server='localhost', serverPassword='', port=6667, usessl=0, nick='KB', nickservPass='', channel='', channelPassword='', modules={}, adminPassword='default', cmd_type=0, cmd_char='$', admin=user(), loadModules_func=None, persVars=None):
 		self.modules = modules
 		self.server = server
 		self.serverPassword = serverPassword
 		self.port = port
+		self.usessl = usessl
 		self.nick = nick
 		self.nickservPass = nickservPass
 		self.channel = channel
@@ -86,7 +88,11 @@ class Bot(object):
 		self._persVars = persVars
 
 		#Connection/authentication routine
-		self.sock = socket.socket()
+		if self.usessl == 1:
+			self.sock = ssl.wrap_socket(socket.socket())
+		else:
+			self.sock = socket.socket()
+		
 		self.sock.connect((server, port))
 
 		if serverPassword != '':

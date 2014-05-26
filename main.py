@@ -56,6 +56,12 @@ if config:
 	while p.isdigit() == False: p = raw_input('Port [number only]> ')
 	newconf['port'] = int(p)
 
+ 	p = raw_input('Use SSL to connect to this irc server [Y/n]> ')
+	if p != 'Y':
+		newconf['ssl'] = 0
+	else:
+		newconf['ssl'] = 1
+
 	p = 'lol'
 	while p.isdigit() == False: p = raw_input('Port for web server [number only]> ')
 	newconf['webport'] = int(p)
@@ -112,7 +118,7 @@ modInstances = loadModsWrapper(persistentVariables)
 adm = core.engine_bot.user()
 adm.nick = config['admin_nick']
 adm.host = config['admin_host']
-bot = core.engine_bot.Bot(server=config['server'], serverPassword=config['serverPassword'], port=config['port'], nick=config['nick'], nickservPass=config['nickservPass'], channel=config['channel'], adminPassword=config['adminPassword'], modules=modInstances, cmd_type=config['cmd_type'], cmd_char=config['cmd_char'], admin=adm, loadModules_func=loadModsWrapper, persVars=persistentVariables) #We need to go wider
+bot = core.engine_bot.Bot(server=config['server'], serverPassword=config['serverPassword'], port=config['port'], usessl=config['ssl'], nick=config['nick'], nickservPass=config['nickservPass'], channel=config['channel'], adminPassword=config['adminPassword'], modules=modInstances, cmd_type=config['cmd_type'], cmd_char=config['cmd_char'], admin=adm, loadModules_func=loadModsWrapper, persVars=persistentVariables) #We need to go wider
 
 srv_ss = SocketServer.ThreadingTCPServer(('127.0.0.1', 60981), core.engine_botserver.botServer)
 srv = threading.Thread(target=core.engine_botserver.start, args=(bot, modInstances, srv_ss))
